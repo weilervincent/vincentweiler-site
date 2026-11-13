@@ -1,0 +1,10 @@
+title: Narrative
+projects:
+- project: content/projects/the-diggers.yml
+- project: content/projects/coggia.yml
+- project: content/projects/la-boheme-2050.yml
+- project: content/projects/los-paisajes.yml
+- project: content/projects/positive-education.yml
+- project: content/projects/dysphoria.yml
+- project: content/projects/cour-des-grandes.yml
+- project: content/projects/despues-de-la-z.yml

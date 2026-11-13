@@ -1,0 +1,29 @@
+title: Lancôme
+credits: Social Media Content I Dir. Vincent Weiler
+credits_mobile: Social Media Content I Dir. Vincent Weiler
+section: beauty
+title_width: 3
+thumbnails:
+- /media/projects/lancome/lancome-01.webp
+- /media/projects/lancome/lancome-02.webp
+- /media/projects/lancome/lancome-03.webp
+- /media/projects/lancome/lancome-04.webp
+- /media/projects/lancome/lancome-05.webp
+mobile_thumbnail: /media/projects/lancome/lancome-09.webp
+blocks:
+- type: videos
+  columns: 3
+  videos:
+  - url: https://vimeo.com/1240779408/7521e38c4d
+    format: '9:16'
+  - url: https://vimeo.com/1240779409/3157bfc09a
+    format: '9:16'
+  - url: https://vimeo.com/1240779411/78551f09eb
+    format: '9:16'
+  mobile_columns: 2
+- type: slideshow
+  images:
+  - /media/projects/lancome/lancome-06.webp
+  - /media/projects/lancome/lancome-07.webp
+  - /media/projects/lancome/lancome-08.webp
+  on_mobile: slideshow

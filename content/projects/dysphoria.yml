@@ -1,0 +1,41 @@
+title: Dysphoria
+credits: Short Film (in post) I Dir. Yannis Mouhoun I Prod. Cocoye Creative
+credits_mobile: 'Dir. Yannis Mouhoun
+
+  Prod. Cocoye Creative'
+section: narrative
+title_width: 3
+thumbnails:
+- /media/projects/dysphoria/dysphoria-01.webp
+- /media/projects/dysphoria/dysphoria-02.webp
+- /media/projects/dysphoria/dysphoria-03.webp
+mobile_thumbnail: /media/projects/dysphoria/dysphoria-02.webp
+blocks:
+- type: slideshow
+  images:
+  - /media/projects/dysphoria/dysphoria-04.webp
+  - /media/projects/dysphoria/dysphoria-05.webp
+  - /media/projects/dysphoria/dysphoria-06.webp
+  - /media/projects/dysphoria/dysphoria-07.webp
+  - /media/projects/dysphoria/dysphoria-08.webp
+  - /media/projects/dysphoria/dysphoria-09.webp
+  - /media/projects/dysphoria/dysphoria-10.webp
+  - /media/projects/dysphoria/dysphoria-11.webp
+  - /media/projects/dysphoria/dysphoria-12.webp
+  - /media/projects/dysphoria/dysphoria-13.webp
+  - /media/projects/dysphoria/dysphoria-14.webp
+  - /media/projects/dysphoria/dysphoria-15.webp
+  - /media/projects/dysphoria/dysphoria-16.webp
+  - /media/projects/dysphoria/dysphoria-17.webp
+  - /media/projects/dysphoria/dysphoria-18.webp
+  - /media/projects/dysphoria/dysphoria-19.webp
+  - /media/projects/dysphoria/dysphoria-20.webp
+  - /media/projects/dysphoria/dysphoria-21.webp
+  - /media/projects/dysphoria/dysphoria-22.webp
+  - /media/projects/dysphoria/dysphoria-23.webp
+  - /media/projects/dysphoria/dysphoria-24.webp
+  - /media/projects/dysphoria/dysphoria-25.webp
+  - /media/projects/dysphoria/dysphoria-26.webp
+  - /media/projects/dysphoria/dysphoria-27.webp
+  - /media/projects/dysphoria/dysphoria-28.webp
+  on_mobile: one-per-row

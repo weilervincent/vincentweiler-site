@@ -1,0 +1,32 @@
+title: Positive Education
+credits: Documentary (in post) I Dir. Anthony Pinelli I Prod. Les Films de l’Instant
+credits_mobile: 'Dir. Anthony Pinelli
+
+  Prod. Les Films de l’Instant'
+section: narrative
+title_width: 4
+thumbnails:
+- /media/projects/positive-education/positive-education-01.webp
+- /media/projects/positive-education/positive-education-02.webp
+- /media/projects/positive-education/positive-education-03.webp
+mobile_thumbnail: /media/projects/positive-education/positive-education-02.webp
+blocks:
+- type: slideshow
+  images:
+  - /media/projects/positive-education/positive-education-04.webp
+  - /media/projects/positive-education/positive-education-05.webp
+  - /media/projects/positive-education/positive-education-06.webp
+  - /media/projects/positive-education/positive-education-07.webp
+  - /media/projects/positive-education/positive-education-08.webp
+  - /media/projects/positive-education/positive-education-09.webp
+  - /media/projects/positive-education/positive-education-10.webp
+  - /media/projects/positive-education/positive-education-11.webp
+  - /media/projects/positive-education/positive-education-12.webp
+  - /media/projects/positive-education/positive-education-13.webp
+  - /media/projects/positive-education/positive-education-14.webp
+  - /media/projects/positive-education/positive-education-15.webp
+  - /media/projects/positive-education/positive-education-16.webp
+  - /media/projects/positive-education/positive-education-17.webp
+  - /media/projects/positive-education/positive-education-18.webp
+  - /media/projects/positive-education/positive-education-19.webp
+  on_mobile: one-per-row

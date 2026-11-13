@@ -1,0 +1,23 @@
+title: Viktor & Rolf
+credits: Social Media Content I Dir. Vincent Weiler I Prod. Make It Nice
+credits_mobile: Social Media Content I Dir. Vincent Weiler I Prod. Make It Nice
+section: beauty
+title_width: 3
+thumbnails:
+- /media/projects/viktor-rolf/viktor-rolf-01.webp
+- /media/projects/viktor-rolf/viktor-rolf-02.webp
+- /media/projects/viktor-rolf/viktor-rolf-03.webp
+- /media/projects/viktor-rolf/viktor-rolf-04.webp
+- /media/projects/viktor-rolf/viktor-rolf-05.webp
+mobile_thumbnail: /media/projects/viktor-rolf/viktor-rolf-03.webp
+blocks:
+- type: videos
+  columns: 3
+  videos:
+  - url: https://vimeo.com/1050790503/a2bd28d5bb
+    format: '9:16'
+  - url: https://vimeo.com/1051169906/3339a12cd0
+    format: '9:16'
+  - url: https://vimeo.com/1051169750/afd8894c7f
+    format: '9:16'
+  mobile_columns: 2

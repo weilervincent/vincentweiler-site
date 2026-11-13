@@ -1,0 +1,25 @@
+title: Atelier Swarovski
+credits: Dir. Marilou Daubé I Prod. Isabelle Scharenberg
+credits_mobile: 'Dir. Marilou Daubé
+
+  Prod. Isabelle Scharenberg'
+section: commercials
+title_width: 5
+thumbnails:
+- /media/projects/swarovski/swarovski-01.webp
+- /media/projects/swarovski/swarovski-02.webp
+- /media/projects/swarovski/swarovski-03.webp
+mobile_thumbnail: /media/projects/swarovski/swarovski-02.webp
+blocks:
+- type: video
+  url: https://vimeo.com/376665740/cb7d97a35a
+  format: '16:9'
+  autoplay: true
+- type: video
+  url: https://vimeo.com/376665718/27adca64f7
+  format: '16:9'
+  autoplay: true
+- type: video
+  url: https://vimeo.com/376665710/d18dfff2ea
+  format: '16:9'
+  autoplay: true

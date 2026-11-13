@@ -1,0 +1,23 @@
+title: Uniqlo U
+credits: SS23 campaign I Dir. Alistair Taylor Young I Prod. Kitten Production
+credits_mobile: SS23 Dir. Alistair Taylor Young Prod. Kitten Production
+section: commercials
+title_width: 3
+thumbnails:
+- /media/projects/uniqlo-u-ss23/uniqlo-u-ss23-01.webp
+- /media/projects/uniqlo-u-ss23/uniqlo-u-ss23-02.webp
+- /media/projects/uniqlo-u-ss23/uniqlo-u-ss23-03.webp
+mobile_thumbnail: /media/projects/uniqlo-u-ss23/uniqlo-u-ss23-02.webp
+blocks:
+- type: video
+  url: https://vimeo.com/806004716/6e5cf0ebd7
+  format: '16:9'
+- type: slideshow
+  images:
+  - /media/projects/uniqlo-u-ss23/uniqlo-u-ss23-04.webp
+  - /media/projects/uniqlo-u-ss23/uniqlo-u-ss23-05.webp
+  - /media/projects/uniqlo-u-ss23/uniqlo-u-ss23-06.webp
+  - /media/projects/uniqlo-u-ss23/uniqlo-u-ss23-07.webp
+  - /media/projects/uniqlo-u-ss23/uniqlo-u-ss23-08.webp
+  - /media/projects/uniqlo-u-ss23/uniqlo-u-ss23-09.webp
+  on_mobile: two-per-row

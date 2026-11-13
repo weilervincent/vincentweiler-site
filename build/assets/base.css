@@ -1,0 +1,202 @@
+/* Base layout reproducing the Cargo 3 page model (written from scratch). */
+
+@font-face { font-family: "Diatype Substitute"; src: url("/fonts/inter-latin-wght-normal.woff2") format("woff2"); font-weight: 100 900; font-style: normal; font-display: swap; unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD; }
+@font-face { font-family: "Diatype Substitute"; src: url("/fonts/inter-latin-ext-wght-normal.woff2") format("woff2"); font-weight: 100 900; font-style: normal; font-display: swap; unicode-range: U+0100-02BA, U+02BD-02C5, U+02C7-02CC, U+02CE-02D7, U+02DD-02FF, U+0304, U+0308, U+0329, U+1D00-1DBF, U+1E00-1E9F, U+1EF2-1EFF, U+2020, U+20A0-20AB, U+20AD-20C0, U+2113, U+2C60-2C7F, U+A720-A7FF; }
+@font-face { font-family: "Diatype Substitute"; src: url("/fonts/inter-latin-wght-italic.woff2") format("woff2"); font-weight: 100 900; font-style: italic; font-display: swap; }
+@font-face { font-family: "Diatype Mono Substitute"; src: url("/fonts/geist-mono-latin-wght-normal.woff2") format("woff2"); font-weight: 100 900; font-style: normal; font-display: swap; unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD; }
+@font-face { font-family: "Diatype Mono Substitute"; src: url("/fonts/geist-mono-latin-ext-wght-normal.woff2") format("woff2"); font-weight: 100 900; font-style: normal; font-display: swap; unicode-range: U+0100-02BA, U+02BD-02C5, U+02C7-02CC, U+02CE-02D7, U+02DD-02FF, U+1E00-1E9F, U+2020, U+20A0-20AB, U+20AD-20C0, U+2113, U+2C60-2C7F, U+A720-A7FF; }
+
+*, *::before, *::after { box-sizing: border-box; }
+
+html {
+	--base-size: 12.96px;
+	--viewport-height: 100svh;
+	--mobile-scale: 1;
+	font-size: var(--base-size);
+	position: relative;
+	touch-action: manipulation;
+}
+html.mobile { font-size: calc(var(--base-size) * var(--mobile-scale)); }
+
+body {
+	margin: 0;
+	padding: 0;
+	min-height: var(--viewport-height, 100vh);
+	display: flex;
+	flex-direction: column;
+	width: 100%;
+	background-color: #fff;
+	-webkit-font-smoothing: antialiased;
+	-moz-osx-font-smoothing: grayscale;
+	-webkit-text-size-adjust: none;
+}
+
+.content {
+	display: flex;
+	flex-direction: column;
+	align-items: flex-start;
+	justify-content: flex-start;
+	min-height: 100%;
+	position: relative;
+	flex-grow: 1;
+}
+.pages { width: 100%; flex: 1 0 auto; }
+
+.page {
+	position: relative;
+	isolation: isolate;
+	display: flex;
+	justify-content: center;
+	flex-wrap: wrap;
+	width: 100%;
+	max-width: 100%;
+}
+.page-layout {
+	position: relative;
+	display: flex;
+	flex-direction: row;
+	align-items: flex-start;
+	justify-content: flex-start;
+	flex-grow: 1;
+	width: 100%;
+	z-index: 1;
+}
+.page-content {
+	position: relative;
+	display: flex;
+	flex-direction: row;
+	align-items: flex-start;
+	width: 100%;
+	min-width: 0;
+}
+
+bodycopy {
+	--font-scale: 1;
+	display: block;
+	position: relative;
+	width: 100%;
+	max-width: 100%;
+	word-wrap: break-word;
+}
+
+bodycopy a { cursor: pointer; }
+bodycopy h1, bodycopy h2 { display: block; }
+bodycopy img { display: block; }
+
+/* ---------- columns ---------- */
+column-set {
+	display: grid;
+	width: 100%;
+	grid-template-columns: repeat(var(--cols, 1), minmax(0, 1fr));
+	column-gap: var(--gutter, 1rem);
+	align-items: start;
+	position: relative;
+	clear: both;
+	margin-top: calc(var(--gutter-expand, 0) * var(--gutter, 1rem));
+}
+column-unit { display: block; min-width: 0; position: relative; }
+column-unit[empty] { min-height: 1px; }
+column-set + *, media-item + *, gallery-slideshow + * { --gutter-expand: 1; }
+column-unit > *:first-child { --gutter-expand: 0; }
+
+html.mobile column-set {
+	--m-gutter: calc(var(--mobile-padding-offset, 1) * var(--mobile-gutter, var(--gutter, 1rem)));
+	column-gap: var(--m-gutter);
+	margin-top: calc(var(--gutter-expand, 0) * var(--m-gutter));
+}
+html.mobile column-set[mobile-stack] {
+	display: flex;
+	flex-direction: column;
+	row-gap: var(--m-gutter);
+}
+html.mobile column-set[mobile-stack] > column-unit { width: 100%; }
+html.mobile column-unit[mobile-hide] { display: none !important; }
+
+/* ---------- media ---------- */
+media-item {
+	display: inline-block;
+	vertical-align: bottom;
+	position: relative;
+	width: var(--scale, 100%);
+	max-width: 100%;
+}
+media-item img { width: 100%; height: auto; border: 0 solid; padding: 0; border-radius: 0; }
+media-item .video-frame { border: 0 solid; }
+media-item > a { display: block; }
+media-item[limit-by="fit"] img { width: auto; max-width: 100%; max-height: calc(var(--viewport-height) - 2.8rem); margin: 0 auto; }
+.video-frame { position: relative; width: 100%; overflow: hidden; background: #000; }
+media-item[fill] .video-frame { height: 100%; aspect-ratio: auto !important; }
+.video-frame iframe { position: absolute; inset: 0; width: 100%; height: 100%; border: 0; }
+
+/* scroll animation "fade-up-2" */
+html.js media-item.anim-pending { opacity: 0; transform: translateY(2.5rem); }
+html.js media-item.anim-in {
+	opacity: 1; transform: none;
+	transition: opacity 1000ms cubic-bezier(0.45,0.05,0.33,1), transform 1000ms cubic-bezier(0.45,0.05,0.33,1);
+}
+
+/* ---------- slideshow ---------- */
+gallery-slideshow {
+	display: block;
+	position: relative;
+	width: 100%;
+	aspect-ratio: var(--frame-ratio, 1.5);
+	overflow: hidden;
+	user-select: none;
+}
+gallery-slideshow > media-item {
+	position: absolute;
+	inset: 0;
+	width: 100%;
+	height: 100%;
+	margin: 0;
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	opacity: 0;
+	pointer-events: none;
+	transition-property: opacity, transform;
+	transition-timing-function: ease-in-out;
+	transition-duration: var(--speed, .8s);
+}
+gallery-slideshow > media-item img { width: 100%; height: 100%; object-fit: contain; }
+gallery-slideshow > media-item .video-frame { height: 100%; aspect-ratio: auto !important; }
+gallery-slideshow > media-item.current { opacity: 1; pointer-events: auto; z-index: 2; }
+gallery-slideshow[data-type="slide"] > media-item, gallery-slideshow[data-type="scrub"] > media-item { opacity: 1; transform: translateX(100%); }
+gallery-slideshow[data-type="slide"] > media-item.current, gallery-slideshow[data-type="scrub"] > media-item.current { transform: translateX(0); }
+gallery-slideshow[data-type="slide"] > media-item.prev, gallery-slideshow[data-type="scrub"] > media-item.prev { transform: translateX(-100%); }
+gallery-slideshow > media-item.no-anim-step { transition: none !important; }
+gallery-slideshow[data-nav="cursor-zones"] { cursor: e-resize; }
+gallery-slideshow[data-nav="cursor-zones"].left-zone { cursor: w-resize; }
+gallery-slideshow .ss-btn {
+	position: absolute; top: 50%; z-index: 5;
+	width: 30px; height: 30px; margin-top: -15px;
+	border: 0; border-radius: 50%; padding: 0;
+	background: rgba(87, 87, 87, 0.35); color: rgba(255,255,255,.9);
+	display: flex; align-items: center; justify-content: center; cursor: pointer;
+}
+gallery-slideshow .ss-btn:active { opacity: .7; }
+gallery-slideshow .ss-prev { left: 15px; }
+gallery-slideshow .ss-next { right: 15px; }
+html.mobile gallery-slideshow .ss-prev { left: 10px; }
+html.mobile gallery-slideshow .ss-next { right: 10px; }
+
+/* ---------- wallpaper backdrop ---------- */
+.backdrop.wallpaper {
+	position: fixed;
+	inset: 0;
+	z-index: 0;
+	pointer-events: none;
+	padding: var(--wall-margin, 0);
+}
+.backdrop.wallpaper gallery-slideshow { width: 100%; height: 100%; aspect-ratio: auto; }
+.backdrop.wallpaper gallery-slideshow > media-item img { object-fit: cover; }
+.backdrop.wallpaper gallery-slideshow[data-fill="fit"] > media-item img { object-fit: contain; }
+
+/* ---------- one page, two layouts (desktop / phone) ---------- */
+html.mobile .only-desktop { display: none !important; }
+html:not(.mobile) .only-mobile { display: none !important; }
+.only-desktop, .only-mobile { display: block; }
+.backdrop.wallpaper.only-desktop, .backdrop.wallpaper.only-mobile { display: block; }
+html.mobile .backdrop.wallpaper.only-desktop { display: none !important; }
+html:not(.mobile) .backdrop.wallpaper.only-mobile { display: none !important; }

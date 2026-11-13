@@ -1,0 +1,25 @@
+title: Valentino Beauty
+credits: Social Media Content I Dir. Vincent Weiler I Prod. Make It Nice
+credits_mobile: Social Media Content I Dir. Vincent Weiler I Prod. Make It Nice
+section: beauty
+title_width: 3
+thumbnails:
+- /media/projects/valentino/valentino-01.webp
+- /media/projects/valentino/valentino-02.webp
+- /media/projects/valentino/valentino-03.webp
+- /media/projects/valentino/valentino-04.webp
+- /media/projects/valentino/valentino-05.webp
+mobile_thumbnail: /media/projects/valentino/valentino-06.webp
+blocks:
+- type: videos
+  columns: 2
+  videos:
+  - url: https://vimeo.com/1068106557
+    format: '9:16'
+  - url: https://vimeo.com/1081888767
+    format: '9:16'
+  - url: https://vimeo.com/1051164811/c142c00aca
+    format: '9:16'
+  - url: https://vimeo.com/1050792400/6d580ca3a0
+    format: '9:16'
+  mobile_columns: 2

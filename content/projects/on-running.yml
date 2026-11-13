@@ -1,0 +1,22 @@
+title: On Running “Run Your Local Mountain”
+credits: Dir. Markus Marty I Prod. Make It Nice
+credits_mobile: Dir. Markus Marty Prod Make It Nice
+section: commercials
+title_width: 6
+thumbnails:
+- /media/projects/on-running/on-running-01.webp
+- /media/projects/on-running/on-running-02.webp
+- /media/projects/on-running/on-running-03.webp
+mobile_thumbnail: /media/projects/on-running/on-running-02.webp
+blocks:
+- type: video
+  url: https://vimeo.com/475400022
+  format: '16:9'
+- type: slideshow
+  images:
+  - /media/projects/on-running/on-running-04.webp
+  - /media/projects/on-running/on-running-05.webp
+  - /media/projects/on-running/on-running-06.webp
+  - /media/projects/on-running/on-running-07.webp
+  - /media/projects/on-running/on-running-08.webp
+  on_mobile: two-per-row

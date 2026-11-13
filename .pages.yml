@@ -1,0 +1,276 @@
+# Pages CMS — interface d'édition de vincentweiler.com
+# https://app.pagescms.org
+
+media:
+  input: media
+  output: /media
+  categories: [image]
+  rename: safe
+
+components:
+  video:
+    type: object
+    fields:
+      - name: url
+        label: Lien Vimeo ou YouTube
+        type: string
+        required: true
+        description: "Colle le lien de la vidéo, ex. https://vimeo.com/123456789 (ou https://vimeo.com/123456789/abcdef pour une vidéo privée)."
+      - name: format
+        label: Format
+        type: select
+        options:
+          values: ["16:9", "9:16", "4:3", "1:1", "4:5", "2.39:1", "3:2"]
+        description: "Horizontal 16:9, vertical 9:16 (réseaux sociaux), etc."
+      - name: autoplay
+        label: Lecture automatique sans le son
+        type: boolean
+
+content:
+  - name: projects
+    label: Projets
+    type: collection
+    path: content/projects
+    format: yaml
+    filename: "{fields.title}.yml"
+    view:
+      fields: [title, section]
+      primary: title
+      sort: [title, section]
+      default:
+        sort: title
+    fields:
+      - name: title
+        label: Titre
+        type: string
+        required: true
+      - name: section
+        label: Rubrique
+        type: select
+        required: true
+        options:
+          values:
+            - { value: narrative, label: Narrative }
+            - { value: commercials, label: Commercials }
+            - { value: beauty, label: Beauty }
+        description: "Pense aussi à ajouter le projet dans la liste de sa rubrique (menu « Rubriques »), à l'endroit voulu."
+      - name: credits
+        label: Crédits (ordinateur)
+        type: string
+        description: "Une ligne, ex. « SS26 campaign I Dir. Charlie Tronchot I Prod. Manon Merloz »."
+      - name: credits_mobile
+        label: Crédits (téléphone)
+        type: text
+        description: "Facultatif. Une info par ligne. Laisse vide pour reprendre les crédits ci-dessus."
+      - name: thumbnails
+        label: Vignettes de la rubrique
+        type: image
+        list: true
+        description: "Les images en ligne sur la page de la rubrique (3 pour Narrative et Commercials, 5 pour Beauty). Glisse pour changer l'ordre."
+      - name: mobile_thumbnail
+        label: Vignette sur téléphone
+        type: image
+        description: "L'image unique qui représente le projet sur téléphone."
+      - name: blocks
+        label: Contenu de la page
+        type: block
+        blockKey: type
+        list:
+          collapsible:
+            collapsed: true
+        blocks:
+          - name: video
+            label: Vidéo (pleine largeur)
+            fields:
+              - { name: url, label: Lien Vimeo ou YouTube, type: string, required: true }
+              - name: format
+                label: Format
+                type: select
+                options:
+                  values: ["16:9", "9:16", "4:3", "1:1", "4:5", "2.39:1", "3:2"]
+              - { name: autoplay, label: Lecture automatique sans le son, type: boolean }
+          - name: videos
+            label: Plusieurs vidéos côte à côte
+            fields:
+              - name: videos
+                label: Vidéos
+                component: video
+                list:
+                  collapsible:
+                    collapsed: true
+                    summary: "{url}"
+              - { name: columns, label: Vidéos par ligne (ordinateur), type: number, options: { min: 1, max: 5 } }
+              - { name: mobile_columns, label: Vidéos par ligne (téléphone), type: number, options: { min: 1, max: 3 } }
+          - name: slideshow
+            label: Diaporama de photos
+            fields:
+              - name: images
+                label: Photos
+                type: image
+                list: true
+                description: "Glisse tes photos ici (JPG ou PNG, même en grand : elles sont redimensionnées automatiquement)."
+              - { name: seconds_per_image, label: Secondes par photo, type: number, options: { min: 0.5, max: 10, step: 0.5 } }
+              - { name: shuffle, label: Ordre aléatoire, type: boolean }
+              - name: on_mobile
+                label: Sur téléphone
+                type: select
+                options:
+                  values:
+                    - { value: one-per-row, label: Photos les unes sous les autres }
+                    - { value: two-per-row, label: 2 photos par ligne }
+                    - { value: slideshow, label: Garder le diaporama }
+          - name: images
+            label: Photos en grille
+            fields:
+              - { name: images, label: Photos, type: image, list: true }
+              - { name: columns, label: Photos par ligne (ordinateur), type: number, options: { min: 1, max: 5 } }
+              - { name: mobile_columns, label: Photos par ligne (téléphone), type: number, options: { min: 1, max: 3 } }
+          - name: text
+            label: Texte
+            fields:
+              - { name: text, label: Texte, type: text }
+      - name: title_width
+        label: Largeur de la colonne titre (avancé)
+        type: number
+        options: { min: 1, max: 11 }
+        description: "Sur 12. Laisse tel quel en général."
+
+  - name: rubriques
+    label: Rubriques
+    type: group
+    items:
+      - name: narrative
+        label: Narrative — ordre des projets
+        type: file
+        path: content/sections/narrative.yml
+        format: yaml
+        fields:
+          - { name: title, label: Titre de la page, type: string }
+          - name: projects
+            label: Projets (dans l'ordre d'affichage)
+            type: object
+            list:
+              collapsible:
+                collapsed: true
+                summary: "{project}"
+            fields:
+              - name: project
+                label: Projet
+                type: reference
+                options:
+                  collection: projects
+                  value: "{path}"
+                  label: "{title}"
+      - name: commercials
+        label: Commercials — ordre des projets
+        type: file
+        path: content/sections/commercials.yml
+        format: yaml
+        fields:
+          - { name: title, label: Titre de la page, type: string }
+          - name: projects
+            label: Projets (dans l'ordre d'affichage)
+            type: object
+            list:
+              collapsible:
+                collapsed: true
+                summary: "{project}"
+            fields:
+              - name: project
+                label: Projet
+                type: reference
+                options:
+                  collection: projects
+                  value: "{path}"
+                  label: "{title}"
+      - name: beauty
+        label: Beauty — ordre des projets
+        type: file
+        path: content/sections/beauty.yml
+        format: yaml
+        fields:
+          - { name: title, label: Titre de la page, type: string }
+          - name: projects
+            label: Projets (dans l'ordre d'affichage)
+            type: object
+            list:
+              collapsible:
+                collapsed: true
+                summary: "{project}"
+            fields:
+              - name: project
+                label: Projet
+                type: reference
+                options:
+                  collection: projects
+                  value: "{path}"
+                  label: "{title}"
+
+  - name: home
+    label: Accueil
+    type: file
+    path: content/home.yml
+    format: yaml
+    fields:
+      - { name: name, label: Nom, type: string }
+      - { name: subtitle, label: Sous-titre, type: string }
+      - name: background_images
+        label: Images de fond (ordinateur)
+        type: image
+        list: true
+      - name: background_images_mobile
+        label: Images de fond (téléphone, format vertical)
+        type: image
+        list: true
+      - { name: seconds_per_image, label: Secondes par image, type: number, options: { min: 0.5, max: 10, step: 0.5 } }
+      - { name: shuffle, label: Ordre aléatoire, type: boolean }
+
+  - name: info
+    label: Info
+    type: file
+    path: content/info.yml
+    format: yaml
+    fields:
+      - { name: photos, label: Photos (diaporama), type: image, list: true }
+      - { name: text, label: Présentation, type: text }
+      - { name: clients_title, label: Titre de la liste de clients, type: string }
+      - { name: clients, label: Clients, type: text }
+      - name: links
+        label: Liens
+        type: object
+        list: true
+        fields:
+          - { name: label, label: Texte, type: string }
+          - { name: url, label: Adresse, type: string }
+
+  - name: contact
+    label: Contact
+    type: file
+    path: content/contact.yml
+    format: yaml
+    fields:
+      - { name: lines, label: Téléphones / lignes, type: string, list: true }
+      - { name: email, label: E-mail, type: string }
+      - { name: sign_off, label: Dernière ligne, type: string }
+
+  - name: showreel
+    label: Showreel
+    type: file
+    path: content/showreel.yml
+    format: yaml
+    fields:
+      - { name: title, label: Titre (facultatif), type: string }
+      - name: video
+        label: Vidéo
+        component: video
+
+  - name: settings
+    label: Réglages du site
+    type: file
+    path: content/settings.yml
+    format: yaml
+    fields:
+      - { name: site_title, label: Titre du site (onglet du navigateur, Google), type: string }
+      - { name: description, label: Description (Google), type: text }
+      - { name: keywords, label: Mots-clés, type: text }
+      - { name: google_analytics, label: Identifiant Google Analytics, type: string }

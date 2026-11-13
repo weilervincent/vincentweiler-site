@@ -1,0 +1,39 @@
+title: Coggia
+credits: Documentary (in post) I Dir. Anthony Pinelli
+credits_mobile: Dir. Anthony Pinelli
+section: narrative
+title_width: 4
+thumbnails:
+- /media/projects/coggia/coggia-01.webp
+- /media/projects/coggia/coggia-02.webp
+- /media/projects/coggia/coggia-03.webp
+mobile_thumbnail: /media/projects/coggia/coggia-29.webp
+blocks:
+- type: slideshow
+  images:
+  - /media/projects/coggia/coggia-04.webp
+  - /media/projects/coggia/coggia-05.webp
+  - /media/projects/coggia/coggia-06.webp
+  - /media/projects/coggia/coggia-07.webp
+  - /media/projects/coggia/coggia-08.webp
+  - /media/projects/coggia/coggia-09.webp
+  - /media/projects/coggia/coggia-10.webp
+  - /media/projects/coggia/coggia-11.webp
+  - /media/projects/coggia/coggia-12.webp
+  - /media/projects/coggia/coggia-13.webp
+  - /media/projects/coggia/coggia-14.webp
+  - /media/projects/coggia/coggia-15.webp
+  - /media/projects/coggia/coggia-16.webp
+  - /media/projects/coggia/coggia-17.webp
+  - /media/projects/coggia/coggia-18.webp
+  - /media/projects/coggia/coggia-19.webp
+  - /media/projects/coggia/coggia-20.webp
+  - /media/projects/coggia/coggia-21.webp
+  - /media/projects/coggia/coggia-22.webp
+  - /media/projects/coggia/coggia-23.webp
+  - /media/projects/coggia/coggia-24.webp
+  - /media/projects/coggia/coggia-25.webp
+  - /media/projects/coggia/coggia-26.webp
+  - /media/projects/coggia/coggia-27.webp
+  - /media/projects/coggia/coggia-28.webp
+  on_mobile: one-per-row

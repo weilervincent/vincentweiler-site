@@ -1,0 +1,37 @@
+title: La Bohème 2050
+credits: Opera I Dir. Anthony Pinelli I Prod. La Belle Télé
+credits_mobile: 'Dir. Anthony Pinelli
+
+  Prod. La Belle Télé'
+section: narrative
+title_width: 3
+thumbnails:
+- /media/projects/la-boheme-2050/la-boheme-2050-01.webp
+- /media/projects/la-boheme-2050/la-boheme-2050-02.webp
+- /media/projects/la-boheme-2050/la-boheme-2050-03.webp
+mobile_thumbnail: /media/projects/la-boheme-2050/la-boheme-2050-18.webp
+blocks:
+- type: video
+  url: https://vimeo.com/1080175827
+  format: '16:9'
+- type: video
+  url: https://www.youtube.com/watch?v=A-xSQ9cetF0
+  format: '16:9'
+  autoplay: true
+- type: slideshow
+  images:
+  - /media/projects/la-boheme-2050/la-boheme-2050-04.webp
+  - /media/projects/la-boheme-2050/la-boheme-2050-05.webp
+  - /media/projects/la-boheme-2050/la-boheme-2050-06.webp
+  - /media/projects/la-boheme-2050/la-boheme-2050-07.webp
+  - /media/projects/la-boheme-2050/la-boheme-2050-08.webp
+  - /media/projects/la-boheme-2050/la-boheme-2050-09.webp
+  - /media/projects/la-boheme-2050/la-boheme-2050-10.webp
+  - /media/projects/la-boheme-2050/la-boheme-2050-11.webp
+  - /media/projects/la-boheme-2050/la-boheme-2050-12.webp
+  - /media/projects/la-boheme-2050/la-boheme-2050-13.webp
+  - /media/projects/la-boheme-2050/la-boheme-2050-14.webp
+  - /media/projects/la-boheme-2050/la-boheme-2050-15.webp
+  - /media/projects/la-boheme-2050/la-boheme-2050-16.webp
+  - /media/projects/la-boheme-2050/la-boheme-2050-17.webp
+  on_mobile: one-per-row

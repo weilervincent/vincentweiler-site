@@ -1,0 +1,26 @@
+title: Everybody & Everyone
+credits: Dir. Markus Marty I Prod. Make It Nice
+credits_mobile: Dir. Markus Marty Prod. Make It Nice
+section: commercials
+title_width: 6
+thumbnails:
+- /media/projects/everybody-everyone/everybody-everyone-01.webp
+- /media/projects/everybody-everyone/everybody-everyone-02.webp
+- /media/projects/everybody-everyone/everybody-everyone-03.webp
+mobile_thumbnail: /media/projects/everybody-everyone/everybody-everyone-02.webp
+blocks:
+- type: video
+  url: https://vimeo.com/376665649
+  format: '16:9'
+- type: video
+  url: https://vimeo.com/475950754/ffb33c1143
+  format: '16:9'
+  autoplay: true
+- type: video
+  url: https://vimeo.com/476006010/b4e61ef943
+  format: '16:9'
+  autoplay: true
+- type: video
+  url: https://vimeo.com/476014904/4736f174aa
+  format: '16:9'
+  autoplay: true

@@ -1,0 +1,32 @@
+title: Mônot
+credits: SS26 campaign I Dir. Charlie Tronchot I Prod. Manon Merloz
+credits_mobile: 'Dir. Charlie Tronchot
+
+  Prod. Manon Merloz'
+section: commercials
+title_width: 5
+thumbnails:
+- /media/projects/monot/monot-01.webp
+- /media/projects/monot/monot-02.webp
+- /media/projects/monot/monot-03.webp
+mobile_thumbnail: /media/projects/monot/monot-17.webp
+blocks:
+- type: video
+  url: https://vimeo.com/1123559992
+  format: '4:3'
+- type: slideshow
+  images:
+  - /media/projects/monot/monot-04.webp
+  - /media/projects/monot/monot-05.webp
+  - /media/projects/monot/monot-06.webp
+  - /media/projects/monot/monot-07.webp
+  - /media/projects/monot/monot-08.webp
+  - /media/projects/monot/monot-09.webp
+  - /media/projects/monot/monot-10.webp
+  - /media/projects/monot/monot-11.webp
+  - /media/projects/monot/monot-12.webp
+  - /media/projects/monot/monot-13.webp
+  - /media/projects/monot/monot-14.webp
+  - /media/projects/monot/monot-15.webp
+  - /media/projects/monot/monot-16.webp
+  on_mobile: one-per-row

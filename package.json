@@ -1,0 +1,14 @@
+{
+  "name": "vincentweiler-site",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "build": "node build/build.mjs",
+    "preview": "npm run build && npx --yes serve dist -l 8080"
+  },
+  "dependencies": {
+    "js-yaml": "^4.1.0",
+    "sharp": "^0.34.0"
+  },
+  "engines": { "node": ">=20" }
+}

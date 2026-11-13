@@ -1,0 +1,29 @@
+title: Armani Beauty
+credits: Social Media Content I Dir. Vincent Weiler I Prod. Make It Nice
+credits_mobile: Social Media Content I Dir. Vincent Weiler I Prod. Make It Nice
+section: beauty
+title_width: 4
+thumbnails:
+- /media/projects/armani/armani-01.webp
+- /media/projects/armani/armani-02.webp
+- /media/projects/armani/armani-03.webp
+- /media/projects/armani/armani-04.webp
+- /media/projects/armani/armani-05.webp
+mobile_thumbnail: /media/projects/armani/armani-06.webp
+blocks:
+- type: videos
+  columns: 3
+  videos:
+  - url: https://vimeo.com/747172777/a4736190a9
+    format: '9:16'
+  - url: https://vimeo.com/1050798364/fd9317104e
+    format: '9:16'
+  - url: https://vimeo.com/1050802375/92e0602583
+    format: '9:16'
+  - url: https://vimeo.com/728038907/bc1ff7eb07
+    format: '9:16'
+  - url: https://vimeo.com/891978633/48bcfcce89
+    format: '9:16'
+  - url: https://vimeo.com/723425925/901c4de5d1
+    format: '9:16'
+  mobile_columns: 2

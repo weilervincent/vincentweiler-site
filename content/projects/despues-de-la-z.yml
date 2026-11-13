@@ -1,0 +1,26 @@
+title: Despues de la Z
+credits: Short Film I Dir. Rodrigo Cervantes I Prod. The London Film School
+credits_mobile: 'Dir. Rodrigo Cervantes
+
+  Prod. The London Film School'
+section: narrative
+title_width: 5
+thumbnails:
+- /media/projects/despues-de-la-z/despues-de-la-z-01.webp
+- /media/projects/despues-de-la-z/despues-de-la-z-02.webp
+- /media/projects/despues-de-la-z/despues-de-la-z-03.webp
+mobile_thumbnail: /media/projects/despues-de-la-z/despues-de-la-z-02.webp
+blocks:
+- type: video
+  url: https://vimeo.com/254550165/53adc587f8
+  format: '16:9'
+- type: slideshow
+  images:
+  - /media/projects/despues-de-la-z/despues-de-la-z-04.webp
+  - /media/projects/despues-de-la-z/despues-de-la-z-05.webp
+  - /media/projects/despues-de-la-z/despues-de-la-z-06.webp
+  - /media/projects/despues-de-la-z/despues-de-la-z-07.webp
+  - /media/projects/despues-de-la-z/despues-de-la-z-08.webp
+  - /media/projects/despues-de-la-z/despues-de-la-z-09.webp
+  - /media/projects/despues-de-la-z/despues-de-la-z-10.webp
+  on_mobile: one-per-row

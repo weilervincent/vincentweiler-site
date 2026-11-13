@@ -1,0 +1,29 @@
+title: Prada Beauty
+credits: Social Media Content I Dir. Vincent Weiler I Prod. Make It Nice
+credits_mobile: Social Media Content I Dir. Vincent Weiler I Prod. Make It Nice
+section: beauty
+title_width: 3
+thumbnails:
+- /media/projects/prada/prada-01.webp
+- /media/projects/prada/prada-02.webp
+- /media/projects/prada/prada-03.webp
+- /media/projects/prada/prada-04.webp
+- /media/projects/prada/prada-05.webp
+mobile_thumbnail: /media/projects/prada/prada-06.webp
+blocks:
+- type: videos
+  columns: 3
+  videos:
+  - url: https://vimeo.com/1230002739
+    format: '9:16'
+  - url: https://vimeo.com/1050817072/c0f05a3cc6
+    format: '9:16'
+  - url: https://vimeo.com/1117789832
+    format: '9:16'
+  - url: https://vimeo.com/1163069804/1fc5eab297
+    format: '9:16'
+  - url: https://vimeo.com/1050788144/23836ab472
+    format: '9:16'
+  - url: https://vimeo.com/1118889214
+    format: '9:16'
+  mobile_columns: 2

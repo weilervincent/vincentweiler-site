@@ -1,0 +1,25 @@
+title: Marina Rinaldi
+credits: FW24 campaign I Dir. Alistair Taylor Young I Prod. Supervision
+credits_mobile: Dir. Alistair Taylor Young Prod. Supervision
+section: commercials
+title_width: 3
+thumbnails:
+- /media/projects/rinaldi-fw-24/rinaldi-fw-24-01.webp
+- /media/projects/rinaldi-fw-24/rinaldi-fw-24-02.webp
+- /media/projects/rinaldi-fw-24/rinaldi-fw-24-03.webp
+mobile_thumbnail: /media/projects/rinaldi-fw-24/rinaldi-fw-24-02.webp
+blocks:
+- type: video
+  url: https://vimeo.com/1051196155/1b545c5af0
+  format: '16:9'
+- type: slideshow
+  images:
+  - /media/projects/rinaldi-fw-24/rinaldi-fw-24-04.webp
+  - /media/projects/rinaldi-fw-24/rinaldi-fw-24-05.webp
+  - /media/projects/rinaldi-fw-24/rinaldi-fw-24-06.webp
+  - /media/projects/rinaldi-fw-24/rinaldi-fw-24-07.webp
+  - /media/projects/rinaldi-fw-24/rinaldi-fw-24-08.webp
+  - /media/projects/rinaldi-fw-24/rinaldi-fw-24-09.webp
+  - /media/projects/rinaldi-fw-24/rinaldi-fw-24-10.webp
+  - /media/projects/rinaldi-fw-24/rinaldi-fw-24-11.webp
+  on_mobile: two-per-row

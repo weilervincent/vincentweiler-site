@@ -1,0 +1,33 @@
+title: Harper’s Bazaar
+credits: Lily Collins, Patti Smith, Jill Kortleve I Prod. Hearst Media
+credits_mobile: 'Lily Collins, Patti Smith, Jill Kortleve
+
+  Prod. Hearst Media'
+section: commercials
+title_width: 5
+thumbnails:
+- /media/projects/harpers-bazaar/harpers-bazaar-01.webp
+- /media/projects/harpers-bazaar/harpers-bazaar-02.webp
+- /media/projects/harpers-bazaar/harpers-bazaar-03.webp
+mobile_thumbnail: /media/projects/harpers-bazaar/harpers-bazaar-02.webp
+blocks:
+- type: video
+  url: https://www.youtube.com/watch?v=h7PK4PTyfqo
+  format: '16:9'
+  autoplay: true
+- type: video
+  url: https://www.youtube.com/watch?v=coyEwUTZ7Wk
+  format: '16:9'
+  autoplay: true
+- type: video
+  url: https://vimeo.com/705301338/90e30a43e4
+  format: '1:1'
+- type: slideshow
+  images:
+  - /media/projects/harpers-bazaar/harpers-bazaar-04.webp
+  - /media/projects/harpers-bazaar/harpers-bazaar-05.webp
+  - /media/projects/harpers-bazaar/harpers-bazaar-06.webp
+  - /media/projects/harpers-bazaar/harpers-bazaar-07.webp
+  - /media/projects/harpers-bazaar/harpers-bazaar-08.webp
+  - /media/projects/harpers-bazaar/harpers-bazaar-09.webp
+  on_mobile: two-per-row

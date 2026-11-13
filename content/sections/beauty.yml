@@ -1,0 +1,7 @@
+title: Beauty
+projects:
+- project: content/projects/lancome.yml
+- project: content/projects/prada.yml
+- project: content/projects/armani.yml
+- project: content/projects/valentino.yml
+- project: content/projects/viktor-rolf.yml

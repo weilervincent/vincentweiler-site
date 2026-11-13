@@ -1,0 +1,29 @@
+title: Marcia “Le Charme”
+credits: Dir. Basile Mookherjee I Prod. Marcia
+credits_mobile: 'Dir. Basile Mookherjee
+
+  Prod. Marcia'
+section: commercials
+title_width: 5
+thumbnails:
+- /media/projects/marcia/marcia-01.webp
+- /media/projects/marcia/marcia-02.webp
+- /media/projects/marcia/marcia-03.webp
+mobile_thumbnail: /media/projects/marcia/marcia-02.webp
+blocks:
+- type: video
+  url: https://vimeo.com/673748565/7d01db86e1
+  format: '1:1'
+- type: slideshow
+  images:
+  - /media/projects/marcia/marcia-04.webp
+  - /media/projects/marcia/marcia-05.webp
+  - /media/projects/marcia/marcia-06.webp
+  - /media/projects/marcia/marcia-07.webp
+  - /media/projects/marcia/marcia-08.webp
+  - /media/projects/marcia/marcia-09.webp
+  - /media/projects/marcia/marcia-10.webp
+  - /media/projects/marcia/marcia-11.webp
+  - /media/projects/marcia/marcia-12.webp
+  - /media/projects/marcia/marcia-13.webp
+  on_mobile: two-per-row

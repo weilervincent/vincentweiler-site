@@ -1,0 +1,33 @@
+title: The Diggers
+credits: Short film I Dir. Jean-Louis Carrasco
+credits_mobile: Short film I Dir. Jean-Louis Carrasco
+section: narrative
+title_width: 4
+thumbnails:
+- /media/projects/the-diggers/the-diggers-01.webp
+- /media/projects/the-diggers/the-diggers-02.webp
+- /media/projects/the-diggers/the-diggers-03.webp
+mobile_thumbnail: /media/projects/the-diggers/the-diggers-17.webp
+blocks:
+- type: slideshow
+  images:
+  - /media/projects/the-diggers/the-diggers-04.webp
+  - /media/projects/the-diggers/the-diggers-05.webp
+  - /media/projects/the-diggers/the-diggers-06.webp
+  - /media/projects/the-diggers/the-diggers-07.webp
+  - /media/projects/the-diggers/the-diggers-08.webp
+  - /media/projects/the-diggers/the-diggers-09.webp
+  - /media/projects/the-diggers/the-diggers-10.webp
+  - /media/projects/the-diggers/the-diggers-11.webp
+  - /media/projects/the-diggers/the-diggers-12.webp
+  - /media/projects/the-diggers/the-diggers-13.webp
+  - /media/projects/the-diggers/the-diggers-14.webp
+  - /media/projects/the-diggers/the-diggers-15.webp
+  on_mobile: one-per-row
+- type: video
+  url: https://vimeo.com/1245816897/d5f2ddebf0
+  format: '16:9'
+- type: images
+  columns: 1
+  images:
+  - /media/projects/the-diggers/the-diggers-16.webp

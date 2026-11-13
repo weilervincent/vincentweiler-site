@@ -1,0 +1,25 @@
+title: AVSTEN
+credits: Social Media Content I Dir. Héloïse Schwab I Prod. Avsten
+credits_mobile: 'Dir. Héloïse Schwab
+
+  Prod. Avsten'
+section: commercials
+title_width: 3
+thumbnails:
+- /media/projects/avsten/avsten-01.webp
+- /media/projects/avsten/avsten-02.webp
+- /media/projects/avsten/avsten-03.webp
+mobile_thumbnail: /media/projects/avsten/avsten-02.webp
+blocks:
+- type: videos
+  columns: 2
+  videos:
+  - url: https://vimeo.com/1118711396
+    format: '9:16'
+  - url: https://vimeo.com/1118711481
+    format: '9:16'
+  - url: https://vimeo.com/1118711448
+    format: '9:16'
+  - url: https://vimeo.com/1118711286
+    format: '9:16'
+  mobile_columns: 2
