@@ -238,4 +238,4 @@ html.mobile #home.page { height: var(--viewport-height); }
 #info .info-links a { display: block; margin-bottom: 0.45em; }
 html.mobile #info column-set { row-gap: 2.2rem !important; }
 html.mobile #info .info-text, html.mobile #info .info-links { padding: 0 0.9rem; }
-html.mobile #info .info-links a { margin-bottom: 0.75em; }
+html.mobile #info .info-links a { margin-bottom: 0.3em; }
