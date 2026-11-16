@@ -41,8 +41,9 @@
 		var idx = 0, timer = null, hover = false;
 
 		function load(i) {
-			var img = items[i] && items[i].querySelector('img[loading="lazy"]');
-			if (img) img.loading = 'eager';
+			var it = items[(i + items.length) % items.length];
+			var img = it && it.querySelector('img[data-src]');
+			if (img) { img.src = img.getAttribute('data-src'); img.removeAttribute('data-src'); }
 		}
 		function show(n, dir) {
 			var prev = idx;
@@ -62,7 +63,7 @@
 			timer = setTimeout(function () { next(); schedule(); }, (delay + speed) * 1000);
 		}
 
-		show(0, 1); load(1);
+		load(0); show(0, 1); load(1);
 		if (items.length > 1) {
 			if (nav === 'cursor-zones' || nav === 'single-advance') {
 				el.addEventListener('mousemove', function (e) {

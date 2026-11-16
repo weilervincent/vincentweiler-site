@@ -115,7 +115,7 @@ async function slideshow(images, opts) {
 		const im = await image(s);
 		if (!im) continue;
 		minRatio = Math.min(minRatio, im.w / im.h);
-		items.push(`<media-item><img src="${im.src}" width="${im.w}" height="${im.h}" alt="" decoding="async" loading="${items.length < 2 ? 'eager' : 'lazy'}"></media-item>`);
+		items.push(`<media-item><img ${items.length < 2 ? 'src' : 'data-src'}="${im.src}" width="${im.w}" height="${im.h}" alt="" decoding="async"></media-item>`);
 	}
 	if (!items.length) return '';
 	return `<gallery-slideshow data-options='${esc(JSON.stringify(opts))}' style="--frame-ratio:${(minRatio === 99 ? 1.5 : minRatio).toFixed(5)}" no-anim>${items.join('')}</gallery-slideshow>`;
@@ -258,7 +258,7 @@ async function buildHome() {
 </h2></div><br>${nav('', false)}</div>`;
 	const wall = async (list, cls) => {
 		const items = [];
-		for (const s of list || []) { const im = await image(s); if (im) items.push(`<media-item><img src="${im.src}" alt="" decoding="async" loading="${items.length < 2 ? 'eager' : 'lazy'}"></media-item>`); }
+		for (const s of list || []) { const im = await image(s); if (im) items.push(`<media-item><img ${items.length < 2 ? 'src' : 'data-src'}="${im.src}" alt="" decoding="async"></media-item>`); }
 		const opts = { autoplay: true, delay: Number(home.seconds_per_image) || 1, speed: 1, type: 'fade', shuffle: home.shuffle !== false, nav: 'none', fill: 'fill' };
 		return `<div class="backdrop wallpaper ${cls}" style="opacity:0.95"><gallery-slideshow class="wallpaper-slideshow" data-options='${esc(JSON.stringify(opts))}'>${items.join('')}</gallery-slideshow></div>`;
 	};
