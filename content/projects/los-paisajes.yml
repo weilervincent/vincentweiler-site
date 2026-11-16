@@ -35,11 +35,11 @@ blocks:
   - /media/projects/los-paisajes/los-paisajes-19.webp
   - /media/projects/los-paisajes/los-paisajes-20.webp
   - /media/projects/los-paisajes/los-paisajes-21.webp
-  on_mobile: two-per-row
+  on_mobile: one-per-row
 - type: images
   columns: 3
   images:
   - /media/projects/los-paisajes/los-paisajes-22.webp
   - /media/projects/los-paisajes/los-paisajes-23.webp
   - /media/projects/los-paisajes/los-paisajes-24.webp
-  mobile_columns: 2
+  mobile_columns: 1

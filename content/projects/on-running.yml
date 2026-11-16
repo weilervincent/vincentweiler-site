@@ -19,4 +19,4 @@ blocks:
   - /media/projects/on-running/on-running-06.webp
   - /media/projects/on-running/on-running-07.webp
   - /media/projects/on-running/on-running-08.webp
-  on_mobile: two-per-row
+  on_mobile: one-per-row

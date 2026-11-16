@@ -16,17 +16,25 @@
 		}
 	}
 
-	function apply() {
+	// Stable viewport height: on phones the address bar shrinks/grows while scrolling,
+	// which must not resize text or re-centre the page. Use the small viewport (svh).
+	var probe = document.createElement('div');
+	probe.style.cssText = 'position:fixed;top:0;left:0;width:1px;height:100vh;height:100svh;visibility:hidden;pointer-events:none';
+	d.appendChild(probe);
+	var lastW = -1;
+	function apply(e) {
 		var w = d.clientWidth || window.innerWidth;
-		var h = window.innerHeight;
 		var mobile = isMobile();
+		if (e && e.type === 'resize' && mobile && w === lastW) return; // only the address bar moved
+		lastW = w;
+		var h = mobile ? (probe.getBoundingClientRect().height || window.innerHeight) : window.innerHeight;
 		var l = 0;
 		if (h > w) { l = (h / w - 1) / 0.777777778; if (l > 1) l = 1; }
 		var f = (mobile && !portraitQ.matches) ? 18 : 9;
 		var unit = Math.min(w, h) / (100 / (f + 5 * l));
 		if (unit < 20) unit = 20;
 		d.style.setProperty('--base-size', (unit * 0.16) + 'px');
-		d.style.setProperty('--viewport-height', h + 'px');
+		d.style.setProperty('--viewport-height', mobile ? '100svh' : h + 'px');
 		d.classList.toggle('mobile', mobile);
 	}
 	apply();

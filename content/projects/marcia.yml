@@ -26,4 +26,4 @@ blocks:
   - /media/projects/marcia/marcia-11.webp
   - /media/projects/marcia/marcia-12.webp
   - /media/projects/marcia/marcia-13.webp
-  on_mobile: two-per-row
+  on_mobile: one-per-row

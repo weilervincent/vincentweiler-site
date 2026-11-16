@@ -22,4 +22,4 @@ blocks:
     format: '9:16'
   - url: https://vimeo.com/1118711286
     format: '9:16'
-  mobile_columns: 2
+  mobile_columns: 1

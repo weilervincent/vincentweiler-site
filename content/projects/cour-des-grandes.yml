@@ -25,4 +25,4 @@ blocks:
   - /media/projects/cour-des-grandes/cour-des-grandes-10.webp
   - /media/projects/cour-des-grandes/cour-des-grandes-11.webp
   - /media/projects/cour-des-grandes/cour-des-grandes-12.webp
-  on_mobile: two-per-row
+  on_mobile: one-per-row

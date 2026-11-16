@@ -22,4 +22,4 @@ blocks:
   - /media/projects/rinaldi-fw-24/rinaldi-fw-24-09.webp
   - /media/projects/rinaldi-fw-24/rinaldi-fw-24-10.webp
   - /media/projects/rinaldi-fw-24/rinaldi-fw-24-11.webp
-  on_mobile: two-per-row
+  on_mobile: one-per-row

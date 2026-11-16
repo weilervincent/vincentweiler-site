@@ -163,9 +163,9 @@ function headerDesktop(active) {
 }
 function headerMobile({ big = true, section, nav = false } = {}) {
 	const name = `<a class="heading-1-copy" href="/" style="color: rgb(0, 0, 0);">${esc(home.name)}</a>`;
-	return `<div class="only-mobile"><div style="text-align: center">${big ? `<span style="--font-scale: 1.75;">${name}</span>` : name}</div><div style="text-align: center"><a class="heading-2-black" href="/">${esc(home.subtitle)}</a><br>
+	return `<div class="only-mobile"><div style="text-align: center">${big ? `<span style="--font-scale: 1.75;">${name}</span>` : name}</div><div style="text-align: center"><a class="heading-2-black" href="/" style="--font-scale: 1.6;">${esc(home.subtitle)}</a><br>
 <br>
-${section ? `<a class="caption-black" href="/${section}/" style="color: rgb(0, 0, 0); --font-scale: 0.66;">${sectionLabel[section]}</a>` : ''}</div>${nav ? navDesktop() : ''}<br>
+${section ? `<a class="caption-black" href="/${section}/" style="color: rgb(0, 0, 0); --font-scale: 0.75;">${sectionLabel[section]}</a>` : ''}</div>${nav ? navDesktop() : ''}<br>
 `;
 }
 
@@ -226,7 +226,7 @@ async function buildProject(p) {
 		} else if (type === 'videos') {
 			const vids = (b.videos || []).filter((v) => v && v.url);
 			desk += await grid(vids, parseInt(b.columns) || 3, async (v) => videoItem(v)) + '<br>\n';
-			mob += await grid(vids, parseInt(b.mobile_columns) || 2, async (v) => videoItem(v)) + '<br>\n';
+			mob += await grid(vids, parseInt(b.mobile_columns) || 1, async (v) => videoItem(v)) + '<br>\n';
 		} else if (type === 'slideshow') {
 			const ss = await slideshow(b.images, { autoplay: b.autoplay !== false, delay: Number(b.seconds_per_image) || 1, speed: 1, type: 'fade', shuffle: !!b.shuffle, nav: 'cursor-zones' });
 			desk += columnSet([{ html: ss }], { gutter: '1rem' }) + '<br>\n';
@@ -247,7 +247,7 @@ async function buildProject(p) {
 			desk += t; mob += t;
 		}
 	}
-	const body = headerDesktop() + desk + '</div>' + headerMobile({ big: false, section: p.section }) + mob + '</div>';
+	const body = headerDesktop() + desk + '</div>' + headerMobile({ big: true, section: p.section }) + mob + '</div>';
 	const og = (await image((p.thumbnails || [])[0]))?.src;
 	write(`${p.slug}/index.html`, page({ id: `p-${p.slug}`, title: p.title, body, ogImage: og }));
 }

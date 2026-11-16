@@ -22,4 +22,4 @@ blocks:
   - /media/projects/uniqlo-u-fw22/uniqlo-u-fw22-07.webp
   - /media/projects/uniqlo-u-fw22/uniqlo-u-fw22-08.webp
   - /media/projects/uniqlo-u-fw22/uniqlo-u-fw22-09.webp
-  on_mobile: two-per-row
+  on_mobile: one-per-row

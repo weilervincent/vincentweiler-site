@@ -20,7 +20,7 @@ blocks:
     format: '9:16'
   - url: https://vimeo.com/1240779411/78551f09eb
     format: '9:16'
-  mobile_columns: 2
+  mobile_columns: 1
 - type: slideshow
   images:
   - /media/projects/lancome/lancome-06.webp

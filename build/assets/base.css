@@ -14,6 +14,7 @@
 
 html {
 	--base-size: 12.96px;
+	--viewport-height: 100vh;
 	--viewport-height: 100svh;
 	--mobile-scale: 1;
 	font-size: var(--base-size);
@@ -188,7 +189,9 @@ html.mobile gallery-slideshow .ss-next { right: 10px; }
 /* ---------- wallpaper backdrop ---------- */
 .backdrop.wallpaper {
 	position: fixed;
-	inset: 0;
+	top: 0; left: 0; right: 0;
+	height: 100vh;
+	height: 100lvh;
 	z-index: 0;
 	pointer-events: none;
 	padding: var(--wall-margin, 0);
@@ -224,3 +227,7 @@ html:not(.mobile) .backdrop.wallpaper.only-mobile { display: none !important; }
 .proj-row:hover .proj-cap { opacity: 1; }
 .proj-row:hover .proj-cap, .proj-row.is-active .proj-cap { pointer-events: auto; }
 @media (hover: none) { .proj-row:not(.is-active):hover img { filter: none; } .proj-row:not(.is-active):hover .proj-cap { opacity: 0; pointer-events: none; } }
+
+/* phones: the home page never scrolls or bounces */
+html.mobile body:has(#home) { overflow: hidden; overscroll-behavior: none; }
+html.mobile #home.page { height: var(--viewport-height); }

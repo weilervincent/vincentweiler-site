@@ -23,4 +23,4 @@ blocks:
   - /media/projects/vichy/vichy-07.webp
   - /media/projects/vichy/vichy-08.webp
   - /media/projects/vichy/vichy-09.webp
-  on_mobile: two-per-row
+  on_mobile: one-per-row

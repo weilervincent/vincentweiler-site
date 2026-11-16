@@ -30,4 +30,4 @@ blocks:
   - /media/projects/harpers-bazaar/harpers-bazaar-07.webp
   - /media/projects/harpers-bazaar/harpers-bazaar-08.webp
   - /media/projects/harpers-bazaar/harpers-bazaar-09.webp
-  on_mobile: two-per-row
+  on_mobile: one-per-row
