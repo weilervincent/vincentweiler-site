@@ -291,7 +291,7 @@ async function buildHome() {
 }
 
 async function buildInfo() {
-	const ss = await slideshow(info.photos, { sizes: '40vw', autoplay: true, delay: 2, speed: 0.5, type: 'scrub', shuffle: true, nav: 'none' });
+	const ss = await slideshow(info.photos, { sizes: '40vw', autoplay: true, delay: 2, speed: 1, type: 'fade', shuffle: true, nav: 'none' });
 	const text = `<div style="text-align: left"><span style="--font-scale: 0.9;">${nl2br(info.text)}<br>
 <i><br>
 ${esc(info.clients_title)}<br>
