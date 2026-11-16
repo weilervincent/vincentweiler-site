@@ -231,3 +231,11 @@ html:not(.mobile) .backdrop.wallpaper.only-mobile { display: none !important; }
 /* phones: the home page never scrolls or bounces */
 html.mobile body:has(#home) { overflow: hidden; overscroll-behavior: none; }
 html.mobile #home.page { height: var(--viewport-height); }
+
+/* ---------- Info page spacing ---------- */
+#info .info-bio, #info .info-clients { display: block; }
+#info .info-clients { margin-top: 1.4em; }
+#info .info-links a { display: block; margin-bottom: 0.45em; }
+html.mobile #info column-set { row-gap: 2.2rem !important; }
+html.mobile #info .info-text, html.mobile #info .info-links { padding: 0 0.9rem; }
+html.mobile #info .info-links a { margin-bottom: 0.75em; }

@@ -292,12 +292,10 @@ async function buildHome() {
 
 async function buildInfo() {
 	const ss = await slideshow(info.photos, { sizes: '40vw', autoplay: true, delay: 2, speed: 1, type: 'fade', shuffle: true, nav: 'none' });
-	const text = `<div style="text-align: left"><span style="--font-scale: 0.9;">${nl2br(info.text)}<br>
-<i><br>
-${esc(info.clients_title)}<br>
-${esc(info.clients)}</i></span></div>`;
-	const links = `<div style="text-align: left"><span style="color: rgb(0, 0, 0); --font-scale: 0.9;">${(info.links || []).map((l) => `<a href="${esc(l.url)}"${/^https?:/.test(l.url) ? ' target="_blank" rel="noopener"' : ''}>→ ${esc(l.label)}</a>`).join('<br>\n')}<br></span></div>`;
-	const row = columnSet([{ span: 5, html: ss }, { span: 5, html: text }, { span: 2, html: links }], { gutter: '1.3rem', stack: true });
+	const text = `<div class="info-text" style="text-align: left"><span style="--font-scale: 0.9;"><span class="info-bio">${nl2br(info.text)}</span><span class="info-clients"><i>${esc(info.clients_title)}<br>
+${esc(info.clients)}</i></span></span></div>`;
+	const links = `<div class="info-links" style="text-align: left"><span style="color: rgb(0, 0, 0); --font-scale: 0.9;">${(info.links || []).map((l) => `<a href="${esc(l.url)}"${/^https?:/.test(l.url) ? ' target="_blank" rel="noopener"' : ''}>→ ${esc(l.label)}</a>`).join('')}</span></div>`;
+	const row = columnSet([{ span: 5, html: ss }, { span: 5, html: text }, { span: 2, html: links }], { gutter: '2.6rem', stack: true });
 	const body = headerDesktop('info') + '</div>' + headerMobile({ big: true }) + '</div>' + row;
 	write('info/index.html', page({ id: 'info', title: 'Info', body }));
 }
