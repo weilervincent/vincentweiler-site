@@ -349,6 +349,7 @@ async function main() {
 	copyDir(path.join(ROOT, 'build/assets'), path.join(DIST, 'assets'));
 	copyDir(path.join(ROOT, 'build/fonts'), path.join(DIST, 'fonts'));
 	fs.copyFileSync(path.join(ROOT, 'build/favicon.ico'), path.join(DIST, 'favicon.ico'));
+	fs.copyFileSync(path.join(ROOT, 'build/_headers'), path.join(DIST, '_headers'));
 
 	const all = [...(home.background_images || []), ...(home.background_images_mobile || []), ...(info.photos || [])];
 	for (const p of Object.values(projects)) {
