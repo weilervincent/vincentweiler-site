@@ -32,6 +32,19 @@ const sectionLabel = { narrative: 'Narrative', commercials: 'Commercials', beaut
 // ------------------------------------------------------------------ images
 const imgCache = new Map();
 const jobs = [];
+const MAX_FULL = 2560;
+const WIDTHS = [800, 1600];
+const CACHE = path.join(ROOT, 'node_modules/.cache/vw-images');
+import crypto from 'node:crypto';
+async function variant(file, buf, width, quality, out) {
+	const key = crypto.createHash('sha1').update(buf).update(`${width}-${quality}`).digest('hex');
+	const cached = path.join(CACHE, key + '.webp');
+	if (!fs.existsSync(cached)) {
+		fs.mkdirSync(CACHE, { recursive: true });
+		await sharp(buf).rotate().resize({ width, withoutEnlargement: true }).webp({ quality }).toFile(cached);
+	}
+	fs.copyFileSync(cached, out);
+}
 async function image(src) {
 	if (!src) return null;
 	src = String(src).trim();
@@ -40,19 +53,26 @@ async function image(src) {
 		const rel = decodeURI(src.replace(/^\//, ''));
 		const file = path.join(ROOT, rel);
 		if (!fs.existsSync(file)) { console.warn('  ! image introuvable :', src); return null; }
-		const outRel = rel.replace(/\.(jpe?g|png|tiff?|webp|heic|avif|gif)$/i, '') + '.webp';
-		const out = path.join(DIST, outRel);
-		fs.mkdirSync(path.dirname(out), { recursive: true });
-		const meta = await sharp(file).metadata();
+		const base = rel.replace(/\.(jpe?g|png|tiff?|webp|heic|avif|gif)$/i, '');
+		const outFull = path.join(DIST, base + '.webp');
+		fs.mkdirSync(path.dirname(outFull), { recursive: true });
+		const buf = fs.readFileSync(file);
+		const meta = await sharp(buf).metadata();
 		let w = meta.width, h = meta.height;
 		if ((meta.orientation || 1) >= 5) [w, h] = [h, w];
-		if (meta.format === 'webp' && w <= MAX_W) {
-			fs.copyFileSync(file, out);
-		} else {
-			const info = await sharp(file).rotate().resize({ width: MAX_W, withoutEnlargement: true }).webp({ quality: 82 }).toFile(out);
-			w = info.width; h = info.height;
+		// full size: masters already prepared (webp <= 2560 px) are copied untouched
+		if (meta.format === 'webp' && w <= MAX_FULL) fs.copyFileSync(file, outFull);
+		else { await variant(file, buf, MAX_FULL, 90, outFull); const r = Math.min(1, MAX_FULL / w); w = Math.round(w * r); h = Math.round(h * r); }
+		const url = (r) => '/' + r.split(path.sep).map(encodeURIComponent).join('/');
+		const set = [];
+		for (const vw of WIDTHS) {
+			if (vw >= w) continue;
+			const r = `${base}-${vw}.webp`;
+			await variant(file, buf, vw, 85, path.join(DIST, r));
+			set.push(`${url(r)} ${vw}w`);
 		}
-		return { src: '/' + outRel.split(path.sep).map(encodeURIComponent).join('/'), w, h };
+		set.push(`${url(base + '.webp')} ${w}w`);
+		return { src: url(base + '.webp'), srcset: set.join(', '), w, h };
 	})();
 	imgCache.set(src, p);
 	return p;
@@ -91,10 +111,10 @@ function videoItem(v) {
 }
 
 // ------------------------------------------------------------------ markup helpers
-async function imgItem(src, { href, eager, style, noAnim } = {}) {
+async function imgItem(src, { href, eager, style, noAnim, sizes } = {}) {
 	const im = await image(src);
 	if (!im) return '';
-	const tag = `<img src="${im.src}" width="${im.w}" height="${im.h}" alt="" decoding="async" loading="${eager ? 'eager' : 'lazy'}"${style ? ` style="${style}"` : ''}>`;
+	const tag = `<img src="${im.src}" srcset="${im.srcset}" sizes="${sizes || '100vw'}" width="${im.w}" height="${im.h}" alt="" decoding="async" loading="${eager ? 'eager' : 'lazy'}"${style ? ` style="${style}"` : ''}>`;
 	const inner = href ? `<a href="${href}">${tag}</a>` : tag;
 	return `<media-item data-ratio="${(im.w / im.h).toFixed(5)}"${noAnim ? ' no-anim' : ''}>${inner}</media-item>`;
 }
@@ -115,7 +135,7 @@ async function slideshow(images, opts) {
 		const im = await image(s);
 		if (!im) continue;
 		minRatio = Math.min(minRatio, im.w / im.h);
-		items.push(`<media-item><img ${items.length < 2 ? 'src' : 'data-src'}="${im.src}" width="${im.w}" height="${im.h}" alt="" decoding="async"></media-item>`);
+		items.push(`<media-item><img ${items.length < 2 ? 'src' : 'data-src'}="${im.src}" ${items.length < 2 ? 'srcset' : 'data-srcset'}="${im.srcset}" sizes="${opts.sizes || '90vw'}" width="${im.w}" height="${im.h}" alt="" decoding="async"></media-item>`);
 	}
 	if (!items.length) return '';
 	return `<gallery-slideshow data-options='${esc(JSON.stringify(opts))}' style="--frame-ratio:${(minRatio === 99 ? 1.5 : minRatio).toFixed(5)}" no-anim>${items.join('')}</gallery-slideshow>`;
@@ -241,7 +261,7 @@ async function buildSection(name) {
 		const href = `/${p.slug}/`;
 		const thumbs = (p.thumbnails || []).filter(Boolean);
 		const cap = `<a class="proj-cap" href="${href}" aria-label="${esc(p.title)}"><span>${esc(p.title)}</span></a>`;
-		desk += `<div class="proj-row">` + columnSet(await Promise.all(thumbs.map(async (t) => ({ html: await imgItem(t, { href }) }))), { gutter: '0rem', stack: false }) + cap + '</div><br>\n';
+		desk += `<div class="proj-row">` + columnSet(await Promise.all(thumbs.map(async (t) => ({ html: await imgItem(t, { href, sizes: `${Math.round(90 / thumbs.length)}vw` }) }))), { gutter: '0rem', stack: false }) + cap + '</div><br>\n';
 		mob += `<div class="proj-row proj-row-m">` + await imgItem(p.mobile_thumbnail || thumbs[Math.floor(thumbs.length / 2)], { href, style: 'padding: 0.2rem;' }) + cap + '</div>';
 	}
 	const css = `#s-${name}.page{min-height:var(--viewport-height)} #s-${name} .page-content{align-items:flex-start;padding:1.5rem}`;
@@ -259,7 +279,7 @@ async function buildHome() {
 </h2></div><br>${nav('', false)}</div>`;
 	const wall = async (list, cls) => {
 		const items = [];
-		for (const s of list || []) { const im = await image(s); if (im) items.push(`<media-item><img ${items.length < 2 ? 'src' : 'data-src'}="${im.src}" alt="" decoding="async"></media-item>`); }
+		for (const s of list || []) { const im = await image(s); if (im) items.push(`<media-item><img ${items.length < 2 ? 'src' : 'data-src'}="${im.src}" ${items.length < 2 ? 'srcset' : 'data-srcset'}="${im.srcset}" sizes="100vw" alt="" decoding="async"></media-item>`); }
 		const opts = { autoplay: true, delay: Number(home.seconds_per_image) || 1, speed: 1, type: 'fade', shuffle: home.shuffle !== false, nav: 'none', fill: 'fill' };
 		return `<div class="backdrop wallpaper ${cls}" style="opacity:0.95"><gallery-slideshow class="wallpaper-slideshow" data-options='${esc(JSON.stringify(opts))}'>${items.join('')}</gallery-slideshow></div>`;
 	};
@@ -271,7 +291,7 @@ async function buildHome() {
 }
 
 async function buildInfo() {
-	const ss = await slideshow(info.photos, { autoplay: true, delay: 2, speed: 0.5, type: 'scrub', shuffle: true, nav: 'none' });
+	const ss = await slideshow(info.photos, { sizes: '40vw', autoplay: true, delay: 2, speed: 0.5, type: 'scrub', shuffle: true, nav: 'none' });
 	const text = `<div style="text-align: left"><span style="--font-scale: 0.9;">${nl2br(info.text)}<br>
 <i><br>
 ${esc(info.clients_title)}<br>

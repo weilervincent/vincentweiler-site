@@ -43,7 +43,7 @@
 		function load(i) {
 			var it = items[(i + items.length) % items.length];
 			var img = it && it.querySelector('img[data-src]');
-			if (img) { img.src = img.getAttribute('data-src'); img.removeAttribute('data-src'); }
+			if (img) { if (img.hasAttribute('data-srcset')) { img.srcset = img.getAttribute('data-srcset'); img.removeAttribute('data-srcset'); } img.src = img.getAttribute('data-src'); img.removeAttribute('data-src'); }
 		}
 		function show(n, dir) {
 			var prev = idx;
