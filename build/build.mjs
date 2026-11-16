@@ -33,15 +33,15 @@ const sectionLabel = { narrative: 'Narrative', commercials: 'Commercials', beaut
 const imgCache = new Map();
 const jobs = [];
 const MAX_FULL = 2560;
-const WIDTHS = [800, 1600];
+const WIDTHS = [800, 1280, 1920];
 const CACHE = path.join(ROOT, 'node_modules/.cache/vw-images');
 import crypto from 'node:crypto';
 async function variant(file, buf, width, quality, out) {
-	const key = crypto.createHash('sha1').update(buf).update(`${width}-${quality}`).digest('hex');
+	const key = crypto.createHash('sha1').update(buf).update(`${width}-${quality}-ss-srgb`).digest('hex');
 	const cached = path.join(CACHE, key + '.webp');
 	if (!fs.existsSync(cached)) {
 		fs.mkdirSync(CACHE, { recursive: true });
-		await sharp(buf).rotate().resize({ width, withoutEnlargement: true }).webp({ quality }).toFile(cached);
+		await sharp(buf).rotate().resize({ width, withoutEnlargement: true }).toColourspace('srgb').webp({ quality, smartSubsample: true, effort: 5 }).toFile(cached);
 	}
 	fs.copyFileSync(cached, out);
 }
@@ -60,15 +60,14 @@ async function image(src) {
 		const meta = await sharp(buf).metadata();
 		let w = meta.width, h = meta.height;
 		if ((meta.orientation || 1) >= 5) [w, h] = [h, w];
-		// full size: masters already prepared (webp <= 2560 px) are copied untouched
-		if (meta.format === 'webp' && w <= MAX_FULL) fs.copyFileSync(file, outFull);
-		else { await variant(file, buf, MAX_FULL, 90, outFull); const r = Math.min(1, MAX_FULL / w); w = Math.round(w * r); h = Math.round(h * r); }
+		// full size (max 2560 px), re-encoded from the high-quality master
+		await variant(file, buf, MAX_FULL, 90, outFull); { const r = Math.min(1, MAX_FULL / w); w = Math.round(w * r); h = Math.round(h * r); }
 		const url = (r) => '/' + r.split(path.sep).map(encodeURIComponent).join('/');
 		const set = [];
 		for (const vw of WIDTHS) {
 			if (vw >= w) continue;
 			const r = `${base}-${vw}.webp`;
-			await variant(file, buf, vw, 85, path.join(DIST, r));
+			await variant(file, buf, vw, 88, path.join(DIST, r));
 			set.push(`${url(r)} ${vw}w`);
 		}
 		set.push(`${url(base + '.webp')} ${w}w`);
