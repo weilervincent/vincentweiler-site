@@ -124,3 +124,16 @@
 		});
 	}
 })();
+
+/* Index: on touch screens, first tap reveals the title, second tap opens the project. */
+(function () {
+	if (!window.matchMedia('(hover: none)').matches) return;
+	document.querySelectorAll('.proj-row').forEach(function (row) {
+		row.addEventListener('click', function (e) {
+			if (row.classList.contains('is-active')) return;
+			e.preventDefault();
+			document.querySelectorAll('.proj-row.is-active').forEach(function (r) { r.classList.remove('is-active'); });
+			row.classList.add('is-active');
+		}, true);
+	});
+})();

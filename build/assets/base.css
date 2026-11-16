@@ -200,3 +200,23 @@ html:not(.mobile) .only-mobile { display: none !important; }
 .backdrop.wallpaper.only-desktop, .backdrop.wallpaper.only-mobile { display: block; }
 html.mobile .backdrop.wallpaper.only-desktop { display: none !important; }
 html:not(.mobile) .backdrop.wallpaper.only-mobile { display: none !important; }
+
+/* ---------- index: hover a project = greyed images + title ---------- */
+.proj-row { position: relative; display: block; }
+.proj-row img { transition: filter .35s ease; }
+.proj-row .proj-cap {
+	position: absolute; inset: 0; z-index: 3;
+	display: flex; align-items: center; justify-content: center;
+	padding: 1rem; text-align: center;
+	color: #fff; text-decoration: none;
+	--font-size: 3.4rem; font-size: calc(var(--font-scale, 1) * var(--font-size)); line-height: 1.1; letter-spacing: -0.01em;
+	opacity: 0; transition: opacity .35s ease;
+	pointer-events: none;
+}
+.proj-row-m .proj-cap { inset: 0.2rem; --font-size: 2.6rem; }
+.proj-row.is-active img,
+.proj-row:hover img { filter: grayscale(1) brightness(0.45); }
+.proj-row.is-active .proj-cap,
+.proj-row:hover .proj-cap { opacity: 1; }
+.proj-row:hover .proj-cap, .proj-row.is-active .proj-cap { pointer-events: auto; }
+@media (hover: none) { .proj-row:not(.is-active):hover img { filter: none; } .proj-row:not(.is-active):hover .proj-cap { opacity: 0; pointer-events: none; } }

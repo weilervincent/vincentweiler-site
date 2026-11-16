@@ -240,8 +240,9 @@ async function buildSection(name) {
 	for (const p of list) {
 		const href = `/${p.slug}/`;
 		const thumbs = (p.thumbnails || []).filter(Boolean);
-		desk += columnSet(await Promise.all(thumbs.map(async (t) => ({ html: await imgItem(t, { href }) }))), { gutter: '0rem', stack: false }) + '<br>\n';
-		mob += await imgItem(p.mobile_thumbnail || thumbs[Math.floor(thumbs.length / 2)], { href, style: 'padding: 0.2rem;' });
+		const cap = `<a class="proj-cap" href="${href}" aria-label="${esc(p.title)}"><span>${esc(p.title)}</span></a>`;
+		desk += `<div class="proj-row">` + columnSet(await Promise.all(thumbs.map(async (t) => ({ html: await imgItem(t, { href }) }))), { gutter: '0rem', stack: false }) + cap + '</div><br>\n';
+		mob += `<div class="proj-row proj-row-m">` + await imgItem(p.mobile_thumbnail || thumbs[Math.floor(thumbs.length / 2)], { href, style: 'padding: 0.2rem;' }) + cap + '</div>';
 	}
 	const css = `#s-${name}.page{min-height:var(--viewport-height)} #s-${name} .page-content{align-items:flex-start;padding:1.5rem}`;
 	const body = headerDesktop(name) + desk + '</div>' + headerMobile({ big: true }) + '<br>' + mob + '</div>';
