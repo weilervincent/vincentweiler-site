@@ -44,6 +44,10 @@ content:
         label: Titre
         type: string
         required: true
+      - name: hover_title
+        label: Titre au survol (index)
+        description: Texte affiché sur la vignette grisée au passage de la souris. Vide = le titre.
+        type: string
       - name: section
         label: Rubrique
         type: select
