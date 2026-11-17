@@ -1,21 +1,25 @@
 photos:
-- /media/info/info-01.webp
-- /media/info/info-02.webp
-- /media/info/info-03.webp
-- /media/info/info-04.webp
-- /media/info/info-05.webp
-- /media/info/info-06.webp
-- /media/info/info-07.webp
-- /media/info/info-08.webp
-text: Vincent is a director of photography who studied at Central Saint Martins and the London Film School and has gained attention in commercial areas with his dramatic and documentary work. After a few years in New York, he is now based in Paris.
-clients_title: 'Client Selection:'
-clients: Lancôme Paris, Uniqlo, Mônot, Prada Beauty, Armani Beauty, France TV, On Running, Harper’s Bazaar, Atelier Swarovski, Valentino Beauty, Vichy Laboratoires, Marcia Wear, Vice TV
+  - /media/info/info-01.webp
+  - /media/info/info-02.webp
+  - /media/info/info-03.webp
+  - /media/info/info-04.webp
+  - /media/info/info-05.webp
+  - /media/info/info-06.webp
+  - /media/info/info-07.webp
+text: Vincent is a director of photography who studied at Central Saint Martins
+  and the London Film School and has gained attention in commercial areas with
+  his dramatic and documentary work. After a few years in New York, he is now
+  based in Paris.
+clients_title: "Client Selection:"
+clients: Lancôme Paris, Uniqlo, Mônot, Prada Beauty, Armani Beauty, France TV,
+  On Running, Harper’s Bazaar, Atelier Swarovski, Valentino Beauty, Vichy
+  Laboratoires, Marcia Wear, Vice TV
 links:
-- label: Contact
-  url: /contact
-- label: Showreel
-  url: /showreel
-- label: Instagram
-  url: https://www.instagram.com/vincentweiler/
-- label: Imdb
-  url: https://www.imdb.com/name/nm5008256/?ref_=nv_sr_srsg_0_tt_2_nm_6_q_vincent%2520weiler
+  - label: Contact
+    url: /contact
+  - label: Showreel
+    url: /showreel
+  - label: Instagram
+    url: https://www.instagram.com/vincentweiler/
+  - label: Imdb
+    url: https://www.imdb.com/name/nm5008256/?ref_=nv_sr_srsg_0_tt_2_nm_6_q_vincent%2520weiler
