@@ -56,7 +56,11 @@ async function image(src) {
 		const rel = decodeURI(src.replace(/^\//, ''));
 		const file = path.join(ROOT, rel);
 		if (!fs.existsSync(file)) { console.warn('  ! image introuvable :', src); return null; }
-		const base = rel.replace(/\.(jpe?g|png|tiff?|webp|heic|avif|gif)$/i, '');
+		// SEO-friendly public file names: media/projects/prada/vincent-weiler-prada-01.webp
+		const stem = rel.replace(/\.(jpe?g|png|tiff?|webp|heic|avif|gif)$/i, '');
+		const dir = path.dirname(stem), name = path.basename(stem);
+		const kind = /^media\/home/.test(stem) ? 'film-still-' : /^media\/info/.test(stem) ? 'director-of-photography-' : '';
+		const base = path.join(dir, name.startsWith('vincent-weiler') ? name : `vincent-weiler-${kind}${name}`);
 		const outFull = path.join(DIST, base + '.webp');
 		fs.mkdirSync(path.dirname(outFull), { recursive: true });
 		const buf = fs.readFileSync(file);
@@ -115,9 +119,14 @@ function videoItem(v) {
 // ------------------------------------------------------------------ markup helpers
 const SITE = 'https://www.vincentweiler.com';
 let ALT = ''; // alt text for images of the page being built (SEO + accessibility)
+let PAGE_URL = '/'; // page being built, for the image sitemap
+const pageImages = new Map();
+function useImage(src) { if (!pageImages.has(PAGE_URL)) pageImages.set(PAGE_URL, new Set()); pageImages.get(PAGE_URL).add(src); }
+const PORTRAIT = '/media/portrait/vincent-weiler-director-of-photography.jpg';
 async function imgItem(src, { href, eager, style, noAnim, sizes } = {}) {
 	const im = await image(src);
 	if (!im) return '';
+	useImage(im.src);
 	const tag = `<img src="${im.src}" srcset="${im.srcset}" sizes="${sizes || '100vw'}" width="${im.w}" height="${im.h}" alt="${esc(ALT)}" decoding="async" loading="${eager ? 'eager' : 'lazy'}"${style ? ` style="${style}"` : ''}>`;
 	const inner = href ? `<a href="${href}">${tag}</a>` : tag;
 	return `<media-item data-ratio="${(im.w / im.h).toFixed(5)}"${noAnim ? ' no-anim' : ''}>${inner}</media-item>`;
@@ -139,6 +148,7 @@ async function slideshow(images, opts) {
 		const im = await image(s);
 		if (!im) continue;
 		minRatio = Math.min(minRatio, im.w / im.h);
+		useImage(im.src);
 		items.push(`<media-item><img ${items.length < 2 ? 'src' : 'data-src'}="${im.src}" ${items.length < 2 ? 'srcset' : 'data-srcset'}="${im.srcset}" sizes="${opts.sizes || '90vw'}" width="${im.w}" height="${im.h}" alt="${esc(ALT)}" decoding="async"></media-item>`);
 	}
 	if (!items.length) return '';
@@ -216,7 +226,7 @@ ${ga}
 }
 function personLD() {
 	const same = (info.links || []).map((l) => l.url).filter((u) => /^https?:/.test(u)).map((u) => u.split('?')[0]);
-	return { '@context': 'https://schema.org', '@type': 'Person', '@id': SITE + '/#vincent', name: 'Vincent Weiler', jobTitle: 'Director of Photography (chef opérateur)', url: SITE + '/', image: SITE + '/og/home.jpg', address: { '@type': 'PostalAddress', addressLocality: 'Paris', addressCountry: 'FR' }, knowsLanguage: ['fr', 'en'], sameAs: same, description: settings.description };
+	return { '@context': 'https://schema.org', '@type': 'Person', '@id': SITE + '/#vincent', name: 'Vincent Weiler', jobTitle: 'Director of Photography (chef opérateur)', url: SITE + '/', image: SITE + PORTRAIT, address: { '@type': 'PostalAddress', addressLocality: 'Paris', addressCountry: 'FR' }, knowsLanguage: ['fr', 'en'], sameAs: same, description: settings.description };
 }
 // 1200 px JPEG preview for link sharing (WhatsApp, LinkedIn, mail…)
 async function ogJpeg(src, name) {
@@ -237,6 +247,7 @@ function write(rel, html) {
 // ------------------------------------------------------------------ pages
 async function buildProject(p) {
 	const label = p.hover_title || p.title;
+	PAGE_URL = `/${p.slug}/`;
 	ALT = `${label}${p.credits ? ' — ' + plainCredits(p) : ''} — cinematography by Vincent Weiler`;
 	const tw = Math.min(11, Math.max(1, parseInt(p.title_width) || 5));
 	const titleRow = (credits) => columnSet([
@@ -291,6 +302,7 @@ async function buildSection(name) {
 	for (const p of list) {
 		const href = `/${p.slug}/`;
 		const thumbs = (p.thumbnails || []).filter(Boolean);
+		PAGE_URL = `/${name}/`;
 		ALT = `${p.hover_title || p.title} — cinematography by Vincent Weiler`;
 		const cap = `<a class="proj-cap" href="${href}" aria-label="${esc(p.hover_title || p.title)}"><span>${esc(p.hover_title || p.title)}</span></a>`;
 		desk += `<div class="proj-row">` + columnSet(await Promise.all(thumbs.map(async (t) => ({ html: await imgItem(t, { href, sizes: `${Math.round(90 / thumbs.length)}vw` }) }))), { gutter: '0rem', stack: false }) + cap + '</div><br>\n';
@@ -312,10 +324,11 @@ async function buildHome() {
 	const mob = `<div class="only-mobile"><div style="text-align: center"><h1 style="color: rgb(255, 255, 255);"><a href="/">${esc(home.name)}</a></h1></div><div style="text-align: center"><h2 style="color: rgb(255, 255, 255);"><a href="/">${esc(home.subtitle)}</a><br>
 <br>
 </h2></div><br>${nav('', false)}</div>`;
+	PAGE_URL = '/';
 	ALT = 'Vincent Weiler, director of photography — film still';
 	const wall = async (list, cls) => {
 		const items = [];
-		for (const s of list || []) { const im = await image(s); if (im) items.push(`<media-item><img ${items.length < 2 ? 'src' : 'data-src'}="${im.src}" ${items.length < 2 ? 'srcset' : 'data-srcset'}="${im.srcset}" sizes="100vw" alt="${esc(ALT)}" decoding="async"></media-item>`); }
+		for (const s of list || []) { const im = await image(s); if (im) useImage(im.src); if (im) items.push(`<media-item><img ${items.length < 2 ? 'src' : 'data-src'}="${im.src}" ${items.length < 2 ? 'srcset' : 'data-srcset'}="${im.srcset}" sizes="100vw" alt="${esc(ALT)}" decoding="async"></media-item>`); }
 		const opts = { autoplay: true, delay: Number(home.seconds_per_image) || 1, speed: 1, type: 'fade', shuffle: home.shuffle !== false, nav: 'none', fill: 'fill' };
 		return `<div class="backdrop wallpaper ${cls}" style="opacity:0.95"><gallery-slideshow class="wallpaper-slideshow" data-options='${esc(JSON.stringify(opts))}'>${items.join('')}</gallery-slideshow></div>`;
 	};
@@ -327,6 +340,7 @@ async function buildHome() {
 }
 
 async function buildInfo() {
+	PAGE_URL = '/info/';
 	ALT = 'Vincent Weiler, director of photography, on set';
 	const ss = await slideshow(info.photos, { sizes: '40vw', autoplay: true, delay: 2, speed: 1, type: 'fade', shuffle: true, nav: 'none' });
 	const text = `<div class="info-text" style="text-align: left"><span style="--font-scale: 0.9;"><span class="info-bio">${nl2br(info.text)}</span><span class="info-clients"><i>${esc(info.clients_title)}<br>
@@ -334,7 +348,7 @@ ${esc(info.clients)}</i></span></span></div>`;
 	const links = `<div class="info-links" style="text-align: left"><span style="color: rgb(0, 0, 0); --font-scale: 0.9;">${(info.links || []).map((l) => `<a href="${esc(l.url)}"${/^https?:/.test(l.url) ? ' target="_blank" rel="noopener"' : ''}>→ ${esc(l.label)}</a>`).join('')}</span></div>`;
 	const row = columnSet([{ span: 5, html: ss }, { span: 5, html: text }, { span: 2, html: links }], { gutter: '2.6rem', stack: true });
 	const body = headerDesktop('info') + '</div>' + headerMobile({ big: true }) + '</div>' + row;
-	write('info/index.html', page({ id: 'info', title: 'Info', body, url: '/info/', ogImage: '/og/home.jpg', description: `${String(info.text || '').replace(/\s+/g, ' ').trim()} ${info.clients_title || ''} ${info.clients || ''}`.trim() }));
+	write('info/index.html', page({ id: 'info', title: 'Info', body, url: '/info/', ogImage: PORTRAIT, description: `${String(info.text || '').replace(/\s+/g, ' ').trim()} ${info.clients_title || ''} ${info.clients || ''}`.trim() }));
 }
 
 async function buildContact() {
@@ -373,7 +387,9 @@ function redirects() {
 
 function sitemap(base = 'https://www.vincentweiler.com') {
 	const urls = ['/', ...SECTIONS.map((s) => `/${s}/`), ...Object.keys(projects).map((s) => `/${s}/`), '/info/', '/contact/', '/showreel/'];
-	fs.writeFileSync(path.join(DIST, 'sitemap.xml'), `<?xml version="1.0" encoding="UTF-8"?>\n<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">\n${urls.map((u) => `<url><loc>${base}${u}</loc></url>`).join('\n')}\n</urlset>\n`);
+	for (const u of ['/', '/info/']) { if (!pageImages.has(u)) pageImages.set(u, new Set()); pageImages.get(u).add(PORTRAIT); }
+	const img = (u) => [...(pageImages.get(u) || [])].map((s) => `<image:image><image:loc>${base}${s}</image:loc></image:image>`).join('');
+	fs.writeFileSync(path.join(DIST, 'sitemap.xml'), `<?xml version="1.0" encoding="UTF-8"?>\n<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9" xmlns:image="http://www.google.com/schemas/sitemap-image/1.1">\n${urls.map((u) => `<url><loc>${base}${u}</loc>${img(u)}</url>`).join('\n')}\n</urlset>\n`);
 	fs.writeFileSync(path.join(DIST, 'robots.txt'), `User-agent: *\nAllow: /\nSitemap: ${base}/sitemap.xml\n`);
 }
 
@@ -383,6 +399,7 @@ async function main() {
 	fs.mkdirSync(DIST, { recursive: true });
 	copyDir(path.join(ROOT, 'build/assets'), path.join(DIST, 'assets'));
 	copyDir(path.join(ROOT, 'build/fonts'), path.join(DIST, 'fonts'));
+	copyDir(path.join(ROOT, 'media/portrait'), path.join(DIST, 'media/portrait'));
 	fs.copyFileSync(path.join(ROOT, 'build/favicon.ico'), path.join(DIST, 'favicon.ico'));
 	fs.copyFileSync(path.join(ROOT, 'build/_headers'), path.join(DIST, '_headers'));
 
