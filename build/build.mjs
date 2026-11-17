@@ -64,13 +64,13 @@ async function image(src) {
 		let w = meta.width, h = meta.height;
 		if ((meta.orientation || 1) >= 5) [w, h] = [h, w];
 		// full size (max 2560 px), re-encoded from the high-quality master
-		await variant(file, buf, MAX_FULL, 92, outFull); { const r = Math.min(1, MAX_FULL / w); w = Math.round(w * r); h = Math.round(h * r); }
+		await variant(file, buf, MAX_FULL, 95, outFull); { const r = Math.min(1, MAX_FULL / w); w = Math.round(w * r); h = Math.round(h * r); }
 		const url = (r) => '/' + r.split(path.sep).map(encodeURIComponent).join('/');
 		const set = [];
 		for (const vw of WIDTHS) {
 			if (vw >= w) continue;
 			const r = `${base}-${vw}.webp`;
-			await variant(file, buf, vw, 90, path.join(DIST, r));
+			await variant(file, buf, vw, 92, path.join(DIST, r));
 			set.push(`${url(r)} ${vw}w`);
 		}
 		set.push(`${url(base + '.webp')} ${w}w`);
