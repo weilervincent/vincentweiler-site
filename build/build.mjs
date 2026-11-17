@@ -113,10 +113,12 @@ function videoItem(v) {
 }
 
 // ------------------------------------------------------------------ markup helpers
+const SITE = 'https://www.vincentweiler.com';
+let ALT = ''; // alt text for images of the page being built (SEO + accessibility)
 async function imgItem(src, { href, eager, style, noAnim, sizes } = {}) {
 	const im = await image(src);
 	if (!im) return '';
-	const tag = `<img src="${im.src}" srcset="${im.srcset}" sizes="${sizes || '100vw'}" width="${im.w}" height="${im.h}" alt="" decoding="async" loading="${eager ? 'eager' : 'lazy'}"${style ? ` style="${style}"` : ''}>`;
+	const tag = `<img src="${im.src}" srcset="${im.srcset}" sizes="${sizes || '100vw'}" width="${im.w}" height="${im.h}" alt="${esc(ALT)}" decoding="async" loading="${eager ? 'eager' : 'lazy'}"${style ? ` style="${style}"` : ''}>`;
 	const inner = href ? `<a href="${href}">${tag}</a>` : tag;
 	return `<media-item data-ratio="${(im.w / im.h).toFixed(5)}"${noAnim ? ' no-anim' : ''}>${inner}</media-item>`;
 }
@@ -137,7 +139,7 @@ async function slideshow(images, opts) {
 		const im = await image(s);
 		if (!im) continue;
 		minRatio = Math.min(minRatio, im.w / im.h);
-		items.push(`<media-item><img ${items.length < 2 ? 'src' : 'data-src'}="${im.src}" ${items.length < 2 ? 'srcset' : 'data-srcset'}="${im.srcset}" sizes="${opts.sizes || '90vw'}" width="${im.w}" height="${im.h}" alt="" decoding="async"></media-item>`);
+		items.push(`<media-item><img ${items.length < 2 ? 'src' : 'data-src'}="${im.src}" ${items.length < 2 ? 'srcset' : 'data-srcset'}="${im.srcset}" sizes="${opts.sizes || '90vw'}" width="${im.w}" height="${im.h}" alt="${esc(ALT)}" decoding="async"></media-item>`);
 	}
 	if (!items.length) return '';
 	return `<gallery-slideshow data-options='${esc(JSON.stringify(opts))}' style="--frame-ratio:${(minRatio === 99 ? 1.5 : minRatio).toFixed(5)}" no-anim>${items.join('')}</gallery-slideshow>`;
@@ -172,7 +174,8 @@ ${section ? `<a class="caption-black" href="/${section}/" style="color: rgb(0, 0
 }
 
 // ------------------------------------------------------------------ page shell
-function page({ id, title, body, css = '', bodyClass = '', ogImage, wallpaper = '' }) {
+function page({ id, title, body, css = '', bodyClass = '', ogImage, wallpaper = '', description, url = '/', jsonld }) {
+	const desc = description || settings.description;
 	const fullTitle = title ? `${title} — ${settings.site_title}` : settings.site_title;
 	const ga = settings.google_analytics ? `<script async src="https://www.googletagmanager.com/gtag/js?id=${esc(settings.google_analytics)}"></script>
 <script>window.dataLayer=window.dataLayer||[];function gtag(){dataLayer.push(arguments);}gtag('js',new Date());gtag('config','${esc(settings.google_analytics)}');</script>` : '';
@@ -182,11 +185,18 @@ function page({ id, title, body, css = '', bodyClass = '', ogImage, wallpaper = 
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>${esc(fullTitle)}</title>
-<meta name="description" content="${esc(settings.description)}">
+<meta name="description" content="${esc(desc)}">
+<link rel="canonical" href="${SITE}${url}">
 <meta name="keywords" content="${esc(settings.keywords)}">
 <meta property="og:title" content="${esc(fullTitle)}">
-<meta property="og:description" content="${esc(settings.description)}">
-${ogImage ? `<meta property="og:image" content="${ogImage}">` : ''}
+<meta property="og:description" content="${esc(desc)}">
+<meta property="og:type" content="website">
+<meta property="og:url" content="${SITE}${url}">
+<meta property="og:site_name" content="Vincent Weiler">
+${ogImage ? `<meta property="og:image" content="${SITE}${ogImage}">
+<meta property="og:image:width" content="1200">
+<meta name="twitter:card" content="summary_large_image">` : ''}
+<script type="application/ld+json">${JSON.stringify(jsonld || personLD()).replace(/</g, '\\u003c')}</script>
 <link rel="icon" href="/favicon.ico" sizes="any">
 <link rel="preload" href="/fonts/SrirachaDisplay-Regular.woff2" as="font" type="font/woff2" crossorigin>
 <link rel="stylesheet" href="/assets/base.css">
@@ -204,6 +214,20 @@ ${ga}
 </html>
 `;
 }
+function personLD() {
+	const same = (info.links || []).map((l) => l.url).filter((u) => /^https?:/.test(u)).map((u) => u.split('?')[0]);
+	return { '@context': 'https://schema.org', '@type': 'Person', '@id': SITE + '/#vincent', name: 'Vincent Weiler', jobTitle: 'Director of Photography (chef opérateur)', url: SITE + '/', image: SITE + '/og/home.jpg', address: { '@type': 'PostalAddress', addressLocality: 'Paris', addressCountry: 'FR' }, knowsLanguage: ['fr', 'en'], sameAs: same, description: settings.description };
+}
+// 1200 px JPEG preview for link sharing (WhatsApp, LinkedIn, mail…)
+async function ogJpeg(src, name) {
+	if (!src) return undefined;
+	const file = path.join(ROOT, decodeURI(String(src).trim().replace(/^\//, '')));
+	if (!fs.existsSync(file)) return undefined;
+	fs.mkdirSync(path.join(DIST, 'og'), { recursive: true });
+	await sharp(file).rotate().resize({ width: 1200, height: 630, fit: 'cover' }).toColourspace('srgb').jpeg({ quality: 88, mozjpeg: true }).toFile(path.join(DIST, 'og', name + '.jpg'));
+	return `/og/${name}.jpg`;
+}
+const plainCredits = (p) => String(p.credits || '').replace(/\s+I\s+/g, ', ').replace(/\s+/g, ' ').trim();
 function write(rel, html) {
 	const out = path.join(DIST, rel);
 	fs.mkdirSync(path.dirname(out), { recursive: true });
@@ -212,6 +236,8 @@ function write(rel, html) {
 
 // ------------------------------------------------------------------ pages
 async function buildProject(p) {
+	const label = p.hover_title || p.title;
+	ALT = `${label}${p.credits ? ' — ' + plainCredits(p) : ''} — cinematography by Vincent Weiler`;
 	const tw = Math.min(11, Math.max(1, parseInt(p.title_width) || 5));
 	const titleRow = (credits) => columnSet([
 		{ span: tw, html: `<div style="text-align: left"><b>${esc(p.title)}</b></div>` },
@@ -250,8 +276,11 @@ async function buildProject(p) {
 		}
 	}
 	const body = headerDesktop() + desk + '</div>' + headerMobile({ big: true, section: p.section }) + mob + '</div>';
-	const og = (await image((p.thumbnails || [])[0]))?.src;
-	write(`${p.slug}/index.html`, page({ id: `p-${p.slug}`, title: p.title, body, ogImage: og }));
+	const og = await ogJpeg((p.thumbnails || [])[0], p.slug);
+	const secName = sectionLabel[p.section] || '';
+	const description = `${label}${p.credits ? ' — ' + plainCredits(p) : ''}. Director of photography / chef opérateur : Vincent Weiler (Paris).${secName ? ' ' + secName + '.' : ''}`;
+	const jsonld = { '@context': 'https://schema.org', '@type': 'CreativeWork', name: label, url: `${SITE}/${p.slug}/`, description, image: og ? SITE + og : undefined, contributor: { '@type': 'Person', '@id': SITE + '/#vincent', name: 'Vincent Weiler', jobTitle: 'Director of Photography' } };
+	write(`${p.slug}/index.html`, page({ id: `p-${p.slug}`, title: label, body, ogImage: og, description, url: `/${p.slug}/`, jsonld }));
 }
 
 async function buildSection(name) {
@@ -262,13 +291,17 @@ async function buildSection(name) {
 	for (const p of list) {
 		const href = `/${p.slug}/`;
 		const thumbs = (p.thumbnails || []).filter(Boolean);
+		ALT = `${p.hover_title || p.title} — cinematography by Vincent Weiler`;
 		const cap = `<a class="proj-cap" href="${href}" aria-label="${esc(p.hover_title || p.title)}"><span>${esc(p.hover_title || p.title)}</span></a>`;
 		desk += `<div class="proj-row">` + columnSet(await Promise.all(thumbs.map(async (t) => ({ html: await imgItem(t, { href, sizes: `${Math.round(90 / thumbs.length)}vw` }) }))), { gutter: '0rem', stack: false }) + cap + '</div><br>\n';
 		mob += `<div class="proj-row proj-row-m">` + await imgItem(p.mobile_thumbnail || thumbs[Math.floor(thumbs.length / 2)], { href, style: 'padding: 0.2rem;' }) + cap + '</div>';
 	}
 	const css = `#s-${name}.page{min-height:var(--viewport-height)} #s-${name} .page-content{align-items:flex-start;padding:1.5rem}`;
 	const body = headerDesktop(name) + desk + '</div>' + headerMobile({ big: true }) + '<br>' + mob + '</div>';
-	write(`${name}/index.html`, page({ id: `s-${name}`, title: sec.title || sectionLabel[name], body, css }));
+	const secDesc = { narrative: 'Narrative work — feature films, short films and music videos (fiction, courts-métrages, clips)', commercials: 'Commercials — fashion and brand campaigns (publicité, films de marque)', beauty: 'Beauty — luxury beauty and fragrance campaigns (publicité beauté, luxe)' }[name] || '';
+	const description = `${secDesc}${secDesc ? '. ' : ''}${list.map((p) => p.hover_title || p.title).join(', ')}. Vincent Weiler, director of photography / chef opérateur, Paris.`;
+	const og = await ogJpeg(((list[0] || {}).thumbnails || [])[0], name);
+	write(`${name}/index.html`, page({ id: `s-${name}`, title: sec.title || sectionLabel[name], body, css, description, url: `/${name}/`, ogImage: og }));
 }
 
 async function buildHome() {
@@ -279,27 +312,29 @@ async function buildHome() {
 	const mob = `<div class="only-mobile"><div style="text-align: center"><h1 style="color: rgb(255, 255, 255);"><a href="/">${esc(home.name)}</a></h1></div><div style="text-align: center"><h2 style="color: rgb(255, 255, 255);"><a href="/">${esc(home.subtitle)}</a><br>
 <br>
 </h2></div><br>${nav('', false)}</div>`;
+	ALT = 'Vincent Weiler, director of photography — film still';
 	const wall = async (list, cls) => {
 		const items = [];
-		for (const s of list || []) { const im = await image(s); if (im) items.push(`<media-item><img ${items.length < 2 ? 'src' : 'data-src'}="${im.src}" ${items.length < 2 ? 'srcset' : 'data-srcset'}="${im.srcset}" sizes="100vw" alt="" decoding="async"></media-item>`); }
+		for (const s of list || []) { const im = await image(s); if (im) items.push(`<media-item><img ${items.length < 2 ? 'src' : 'data-src'}="${im.src}" ${items.length < 2 ? 'srcset' : 'data-srcset'}="${im.srcset}" sizes="100vw" alt="${esc(ALT)}" decoding="async"></media-item>`); }
 		const opts = { autoplay: true, delay: Number(home.seconds_per_image) || 1, speed: 1, type: 'fade', shuffle: home.shuffle !== false, nav: 'none', fill: 'fill' };
 		return `<div class="backdrop wallpaper ${cls}" style="opacity:0.95"><gallery-slideshow class="wallpaper-slideshow" data-options='${esc(JSON.stringify(opts))}'>${items.join('')}</gallery-slideshow></div>`;
 	};
 	const wallpaper = await wall(home.background_images, 'only-desktop') + await wall(home.background_images_mobile?.length ? home.background_images_mobile : home.background_images, 'only-mobile');
 	const css = `#home.page{min-height:var(--viewport-height)} #home .page-content{align-items:center;width:100%} #home .page-layout{align-items:center}`;
-	const og = (await image((home.background_images || [])[0]))?.src;
-	write('index.html', page({ id: 'home', title: '', body: desk + mob, css, wallpaper, ogImage: og }));
+	const og = await ogJpeg((home.background_images || [])[0], 'home');
+	write('index.html', page({ id: 'home', title: '', body: desk + mob, css, wallpaper, ogImage: og, url: '/' }));
 	write('404.html', page({ id: 'home', title: '', body: desk + mob, css, wallpaper }));
 }
 
 async function buildInfo() {
+	ALT = 'Vincent Weiler, director of photography, on set';
 	const ss = await slideshow(info.photos, { sizes: '40vw', autoplay: true, delay: 2, speed: 1, type: 'fade', shuffle: true, nav: 'none' });
 	const text = `<div class="info-text" style="text-align: left"><span style="--font-scale: 0.9;"><span class="info-bio">${nl2br(info.text)}</span><span class="info-clients"><i>${esc(info.clients_title)}<br>
 ${esc(info.clients)}</i></span></span></div>`;
 	const links = `<div class="info-links" style="text-align: left"><span style="color: rgb(0, 0, 0); --font-scale: 0.9;">${(info.links || []).map((l) => `<a href="${esc(l.url)}"${/^https?:/.test(l.url) ? ' target="_blank" rel="noopener"' : ''}>→ ${esc(l.label)}</a>`).join('')}</span></div>`;
 	const row = columnSet([{ span: 5, html: ss }, { span: 5, html: text }, { span: 2, html: links }], { gutter: '2.6rem', stack: true });
 	const body = headerDesktop('info') + '</div>' + headerMobile({ big: true }) + '</div>' + row;
-	write('info/index.html', page({ id: 'info', title: 'Info', body }));
+	write('info/index.html', page({ id: 'info', title: 'Info', body, url: '/info/', ogImage: '/og/home.jpg', description: `${String(info.text || '').replace(/\s+/g, ' ').trim()} ${info.clients_title || ''} ${info.clients || ''}`.trim() }));
 }
 
 async function buildContact() {
@@ -307,13 +342,13 @@ async function buildContact() {
 	const email = contact.email ? `<br>\n<a href="mailto:${esc(contact.email)}">${esc(contact.email)}</a>` : '';
 	const row = columnSet([{ html: `\n<br>\n${lines}${email}<br>\n${esc(contact.sign_off || '')}\n` }], { gutter: '1.3rem', stack: true });
 	const body = headerDesktop() + '<br>\n</div>' + headerMobile({ big: true, nav: true }) + '<br>\n</div>' + row;
-	write('contact/index.html', page({ id: 'contact', title: 'Contact', body }));
+	write('contact/index.html', page({ id: 'contact', title: 'Contact', body, url: '/contact/', ogImage: '/og/home.jpg', description: 'Contact Vincent Weiler, director of photography / chef opérateur based in Paris — availability, rates and projects.' }));
 }
 
 async function buildShowreel() {
 	const row = columnSet([{ html: videoItem(showreel.video) }], { gutter: '1.3rem', stack: true });
 	const body = headerDesktop() + '<br>\n</div>' + headerMobile({ big: true, nav: true }) + '<br>\n</div>' + (showreel.title ? `<div style="text-align: left">${esc(showreel.title)}</div>` : '') + row;
-	write('showreel/index.html', page({ id: 'showreel', title: 'Showreel', body }));
+	write('showreel/index.html', page({ id: 'showreel', title: 'Showreel', body, url: '/showreel/', ogImage: '/og/home.jpg', description: 'Showreel of Vincent Weiler, director of photography / chef opérateur (Paris) — commercials, beauty, fiction.' }));
 }
 
 function copyDir(src, dst) {
