@@ -235,7 +235,7 @@ html.mobile #home.page { height: var(--viewport-height); }
 /* ---------- Info page spacing ---------- */
 #info .info-bio, #info .info-clients { display: block; }
 #info .info-clients { margin-top: 1.4em; }
-#info .info-links a { display: block; margin-bottom: 0.45em; }
+#info .info-links a { display: block; margin-bottom: 0; }
 html.mobile #info column-set { row-gap: 2.2rem !important; }
 html.mobile #info .info-text, html.mobile #info .info-links { padding: 0 0.9rem; }
-html.mobile #info .info-links a { margin-bottom: 0.3em; }
+html.mobile #info .info-links a { margin-bottom: 0; }
