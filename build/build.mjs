@@ -187,8 +187,13 @@ ${section ? `<a class="caption-black" href="/${section}/" style="color: rgb(0, 0
 function page({ id, title, body, css = '', bodyClass = '', ogImage, wallpaper = '', description, url = '/', jsonld }) {
 	const desc = description || settings.description;
 	const fullTitle = title ? `${title} — ${settings.site_title}` : settings.site_title;
-	const ga = settings.google_analytics ? `<script async src="https://www.googletagmanager.com/gtag/js?id=${esc(settings.google_analytics)}"></script>
-<script>window.dataLayer=window.dataLayer||[];function gtag(){dataLayer.push(arguments);}gtag('js',new Date());gtag('config','${esc(settings.google_analytics)}');</script>` : '';
+	// Google Analytics — chargé seulement pour les vrais visiteurs :
+	// - jamais sur les aperçus (*.pages.dev, localhost, aperçus de l'éditeur)
+	// - jamais dans un navigateur automatisé (navigator.webdriver : robots, Claude)
+	// - jamais sur un appareil passé en « mode maintenance » : ouvrir une fois
+	//   vincentweiler.com/?notrack sur cet appareil ; ?track pour annuler.
+	const gaId = settings.google_analytics ? esc(settings.google_analytics) : '';
+	const ga = gaId ? `<script>(function(){var k='vw_notrack',q=location.search;try{if(/[?&]notrack(=|&|$)/.test(q)){localStorage.setItem(k,'1');console.info('Analytics désactivé sur cet appareil');}if(/[?&]track(=|&|$)/.test(q)){localStorage.removeItem(k);console.info('Analytics réactivé sur cet appareil');}if(localStorage.getItem(k))return;}catch(e){}if(navigator.webdriver)return;if(!/(^|\\.)vincentweiler\\.com$/.test(location.hostname))return;var s=document.createElement('script');s.async=true;s.src='https://www.googletagmanager.com/gtag/js?id=${gaId}';document.head.appendChild(s);window.dataLayer=window.dataLayer||[];window.gtag=function(){dataLayer.push(arguments);};gtag('js',new Date());gtag('config','${gaId}');})();</script>` : '';
 	return `<!doctype html>
 <html lang="en">
 <head>

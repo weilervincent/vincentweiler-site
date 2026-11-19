@@ -35,3 +35,10 @@ Les photos sont automatiquement redimensionnées (2000 px de large maximum) et c
 - Les anciennes adresses Cargo (ex. /monot-desktop) redirigent automatiquement vers les nouvelles (/monot/).
 - Une erreur ? Toutes les modifications sont historisées sur GitHub, donc tout peut être annulé.
 - La mise en page elle-même (polices, marges, en-tête) se trouve dans le dossier `build/`. Pour la changer, demande à Claude.
+
+## Ne pas compter mes propres visites dans Google Analytics
+
+- Sur chaque appareil que tu utilises (Mac, téléphone, chaque navigateur), ouvre une fois **vincentweiler.com/?notrack**. Tes visites ne sont plus comptées sur cet appareil.
+- Pour réactiver : **vincentweiler.com/?track**.
+- À refaire si tu vides les données du navigateur, ou si tu n'as pas ouvert le site depuis plus de 7 jours dans Safari (Safari efface ce réglage).
+- Automatique, sans rien faire : les aperçus (*.pages.dev) et les navigateurs automatisés (robots, Claude) ne sont jamais comptés.
