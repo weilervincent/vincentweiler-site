@@ -19,7 +19,8 @@ html,body{background:#fff;color:#030303;font-family:"Instrument Sans",system-ui,
 .name{font-family:"Sriracha Display",cursive;font-weight:400;font-size:clamp(60px,8.1vw,117px);line-height:1}
 .sub{font-family:"Archivo Narrow",sans-serif;font-size:clamp(16px,1.35vw,20px);margin-top:18px}
 main{padding:0 var(--pad) 120px}
-nav{position:sticky;top:0;z-index:20;background:rgba(255,255,255,.96);backdrop-filter:blur(8px);display:grid;grid-template-columns:repeat(4,1fr);padding:18px var(--pad) 16px;margin-top:10px}
+nav{position:sticky;top:0;z-index:20;background:rgba(255,255,255,.96);backdrop-filter:blur(8px);display:grid;grid-template-columns:repeat(5,1fr);padding:18px var(--pad) 16px;margin-top:10px}
+nav a{color:#030303;text-decoration:none;text-align:center;font-size:clamp(16px,1.55vw,22px);transition:color .15s}nav a:hover{color:var(--grey)}
 nav button{font:inherit;background:none;border:none;cursor:pointer;color:#030303;font-size:clamp(16px,1.55vw,22px);transition:color .15s}
 nav button:hover,nav button.on{color:var(--grey)}
 .sec{font-size:clamp(20px,1.8vw,26px);text-align:center;margin:90px 0 0}
@@ -32,7 +33,7 @@ section.p{margin-top:56px}main>section.p:first-child{margin-top:40px}
 .row{display:flex;gap:6px}
 .row img{display:block;background:#f3f3f3}
 .empty{color:var(--grey);padding:80px 0;text-align:center}
-@media (max-width:760px){:root{--pad:14px}nav{gap:4px;padding:14px var(--pad)}nav button{font-size:15px}.ph{flex-direction:column;gap:2px}.ph .cr{text-align:left}.sec{margin-top:64px}}
+@media (max-width:760px){:root{--pad:14px}nav{grid-template-columns:repeat(5,auto);gap:4px;padding:14px var(--pad)}nav button,nav a{font-size:15px}.ph{flex-direction:column;gap:2px}.ph .cr{text-align:left}.sec{margin-top:64px}}
 </style>
 </head>
 <body>
@@ -40,7 +41,7 @@ section.p{margin-top:56px}main>section.p:first-child{margin-top:40px}
   <h1 class="name"><a href="/" style="color:inherit;text-decoration:none">Vincent Weiler</a></h1>
   <div class="sub"><a href="/" style="color:inherit;text-decoration:none">Director of photography</a></div>
 </header>
-<nav id="nav"><button data-s="all" class="on">All</button><button data-s="Narrative">Narrative</button><button data-s="Commercials">Commercials</button><button data-s="Beauty">Beauty</button></nav>
+<nav id="nav"><button data-s="all" class="on">All</button><button data-s="Narrative">Narrative</button><button data-s="Commercials">Commercials</button><button data-s="Beauty">Beauty</button><a href="/info/">Info</a></nav>
 <main id="main"><div class="empty">Chargement…</div></main>
 <script>
 const GAP=6;let DATA=[],filter='all';
@@ -61,18 +62,18 @@ function build(){
 function layout(){
   const W=document.querySelector('.rows')?.clientWidth;if(!W)return;
   const target=W<700?Math.max(120,W*0.42):Math.min(270,Math.max(180,W*0.165));
+  const hOf=(r)=>(W-GAP*(r.length-1))/r.reduce((s,it)=>s+it.w/it.h,0);
+  const img=(it,h,grp)=>`<img loading="lazy" decoding="async" src="${it.m}" width="${(h*it.w/it.h).toFixed(2)}" height="${h.toFixed(2)}" style="width:${(h*it.w/it.h).toFixed(2)}px;height:${h.toFixed(2)}px" alt="${esc(it.alt||(grp.title+" — "+grp.credits))}">`;
   document.querySelectorAll('.rows').forEach(box=>{
-    const grp=DATA[box.dataset.g],items=grp.items;let html='',row=[],sum=0;
-    const flush=last=>{
-      const h=last?Math.min(target,(W-GAP*(row.length-1))/sum):(W-GAP*(row.length-1))/sum;
-      html+='<div class="row">'+row.map(it=>`<img loading="lazy" decoding="async" src="${it.m}" width="${(h*it.w/it.h).toFixed(2)}" height="${h.toFixed(2)}" style="width:${(h*it.w/it.h).toFixed(2)}px;height:${h.toFixed(2)}px" alt="${esc(it.alt||(grp.title+" — "+grp.credits))}">`).join('')+'</div>';
-      row=[];sum=0;
-    };
-    const flushSmall=()=>{const it=row[0];const h=Math.min(target*0.8,(W*0.42)/(it.w/it.h));
-      html+=`<div class="row"><img loading="lazy" decoding="async" src="${it.m}" style="width:${(h*it.w/it.h).toFixed(2)}px;height:${h.toFixed(2)}px" alt="${esc(it.alt||(grp.title+" — "+grp.credits))}"></div>`;row=[];sum=0};
-    if(grp.perRow&&W>=700){for(let i=0;i<items.length;i+=grp.perRow){items.slice(i,i+grp.perRow).forEach(it=>{row.push(it);sum+=it.w/it.h});flush(false)}box.innerHTML=html;return}
-    items.forEach(it=>{if(it.small){if(row.length)flush(true);row.push(it);sum=it.w/it.h;flushSmall();return}row.push(it);sum+=it.w/it.h;if((W-GAP*(row.length-1))/sum<=target)flush(false)});
-    if(row.length)flush(true);
+    const grp=DATA[box.dataset.g],items=grp.items;const rows=[];let row=[];
+    // rows as close as possible to the target height, so every photo is about the same size
+    items.forEach(it=>{const h0=row.length?hOf(row):Infinity;row.push(it);const h1=hOf(row);
+      if(h1<=target){if(row.length>1&&Math.abs(h0-target)<Math.abs(h1-target)){row.pop();rows.push(row);row=[it]}else{rows.push(row);row=[]}}});
+    // no lonely photos on a last row: merge it into the previous row when the result stays close to the target size
+    if(row.length&&rows.length&&hOf(rows[rows.length-1].concat(row))>=target*0.72){rows[rows.length-1]=rows[rows.length-1].concat(row);row=[]}
+    let html='',lastH=target;
+    rows.forEach(r=>{const h=hOf(r);lastH=h;html+='<div class="row">'+r.map(it=>img(it,h,grp)).join('')+'</div>'});
+    if(row.length){const h=Math.min(hOf(row),rows.length?lastH:target);html+='<div class="row">'+row.map(it=>img(it,h,grp)).join('')+'</div>'}
     box.innerHTML=html;
   });
 }
