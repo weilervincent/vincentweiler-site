@@ -392,10 +392,11 @@ function buildGallery() {
 .gal-lb.on{display:flex}
 .gal-lb img{max-width:calc(100vw - 8rem);max-height:calc(100vh - 7rem);object-fit:contain;cursor:pointer}
 .gal-lb button{position:absolute;background:none;border:none;font:inherit;color:#030303;cursor:pointer}
-.gal-x{top:1rem;right:1.2rem}
-.gal-prev,.gal-next{top:0;bottom:0;width:30%}
+.gal-x{top:0;right:0;padding:1rem 1.2rem!important;z-index:3}
+.gal-prev,.gal-next{top:4rem;bottom:0;width:30%;z-index:2}
 .gal-prev{left:0;cursor:w-resize}.gal-next{right:0;cursor:e-resize}
 .gal-lb img{position:relative;z-index:1}
+.gal-cap{z-index:2;pointer-events:none}
 .gal-cap{position:absolute;left:0;right:0;bottom:1rem;text-align:center}
 .gal-cap span{color:#9c9c9c;margin-left:.6em}
 .mobile .gal-lb{font-size:1.5rem}
