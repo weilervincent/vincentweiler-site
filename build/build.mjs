@@ -257,13 +257,16 @@ async function buildProject(p) {
 	PAGE_URL = `/${p.slug}/`;
 	ALT = `${label}${withNames(p)}${p.credits ? ' — ' + plainCredits(p) : ''} — cinematography by Vincent Weiler`;
 	const tw = Math.min(11, Math.max(1, parseInt(p.title_width) || 5));
-	const titleRow = (credits) => columnSet([
-		{ span: tw, html: `<div style="text-align: left"><b>${esc(p.title)}</b></div>` },
-		{ span: 12 - tw, html: `<div style="text-align: right">${credits}</div>` },
+	const names = featuring(p).length ? `<span class="feat"> with ${esc(featuring(p).join(', '))}</span>` : '';
+	const titleRow = (credits, w = tw, n = names) => columnSet([
+		{ span: w, html: `<div style="text-align: left"><b>${esc(p.title)}</b>${n}</div>` },
+		{ span: 12 - w, html: `<div style="text-align: right">${credits}</div>` },
 	], { gutter: '2rem', stack: false });
 
-	let desk = titleRow(esc(p.credits || '')) + '<br>\n';
-	let mob = titleRow(nl2br(p.credits_mobile || String(p.credits || '').replace(/\s+I\s+/g, '\n'))) + '<br>\n';
+	let desk = titleRow(esc(p.credits || ''), names ? Math.max(tw, 6) : tw) + '<br>\n';
+	let mob = names
+		? `<div style="text-align: left"><b>${esc(p.title)}</b>${names}</div><div style="text-align: left; margin-top: .3rem">${esc(p.credits || '')}</div>` + '<br>\n'
+		: titleRow(nl2br(p.credits_mobile || String(p.credits || '').replace(/\s+I\s+/g, '\n'))) + '<br>\n';
 	for (const b of p.blocks || []) {
 		const type = b.type || b._block;
 		if (type === 'video') {
@@ -387,7 +390,7 @@ function buildGallery() {
 .gal-p{margin:0 0 2.2rem}
 .gal-h{display:flex;justify-content:space-between;align-items:baseline;gap:2rem;margin:0 0 .5rem}
 .gal-h span{text-align:right}
-.gal-h i{font-style:normal;font-weight:normal}
+.gal-h i{font-style:normal;font-weight:normal;color:rgba(0,0,0,.45)}
 .gal-h>div{text-align:left}
 .gal-rows{width:100%}
 .gal-row{display:flex;gap:4px;margin-bottom:4px}

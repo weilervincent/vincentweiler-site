@@ -577,3 +577,5 @@ shop-product {--font-size: 1.2rem;}
 shop-product {font-size: calc(var(--font-scale) * var(--font-size));}
 audio-player {--font-size: 1.2rem;}
 audio-player {font-size: calc(var(--font-scale) * var(--font-size));}
+/* noms des personnalités à côté du titre d'un projet */
+.feat{color:rgba(0,0,0,.45);font-weight:normal}
