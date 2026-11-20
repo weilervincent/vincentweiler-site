@@ -20,7 +20,7 @@
 
 	function visible() { return DATA.map((g, i) => ({ g, i })).filter(({ g }) => filter === 'all' || g.section === filter); }
 	function build() {
-		list.innerHTML = visible().map(({ g, i }) => `<section class="gal-p"><div class="gal-h"><b>${esc(g.title)}</b><span>${esc(g.credits)}</span></div><div class="gal-rows" data-g="${i}"></div></section>`).join('');
+		list.innerHTML = visible().map(({ g, i }) => `<section class="gal-p"><div class="gal-h"><div><b>${esc(g.title)}</b>${g.featuring && g.featuring.length ? `<i> with ${esc(g.featuring.join(', '))}</i>` : ''}</div><span>${esc(g.credits)}</span></div><div class="gal-rows" data-g="${i}"></div></section>`).join('');
 	}
 
 	// ---------------------------------------------------------------- layout

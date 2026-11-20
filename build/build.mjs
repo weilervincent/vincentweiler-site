@@ -387,6 +387,8 @@ function buildGallery() {
 .gal-p{margin:0 0 2.2rem}
 .gal-h{display:flex;justify-content:space-between;align-items:baseline;gap:2rem;margin:0 0 .5rem}
 .gal-h span{text-align:right}
+.gal-h i{font-style:normal;font-weight:normal}
+.gal-h>div{text-align:left}
 .gal-rows{width:100%}
 .gal-row{display:flex;gap:4px;margin-bottom:4px}
 .gal-row img{display:block;cursor:zoom-in;background:#f2f2f2}
