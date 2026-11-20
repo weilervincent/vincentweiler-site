@@ -17,6 +17,8 @@ clients: Lancôme Paris, Uniqlo, Mônot, Prada Beauty, Armani Beauty, France TV,
 links:
   - label: Contact
     url: /contact
+  - label: Gallery
+    url: /gallery
   - label: Showreel
     url: /showreel
   - label: Instagram

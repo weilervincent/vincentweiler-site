@@ -370,6 +370,16 @@ async function buildShowreel() {
 	write('showreel/index.html', page({ id: 'showreel', title: 'Showreel', body, url: '/showreel/', ogImage: '/og/home.jpg', description: 'Showreel of Vincent Weiler, director of photography / chef opérateur (Paris) — commercials, beauty, fiction.' }));
 }
 
+// Gallery: static page in gallery/ (all project stills, original formats), linked from Info, copied as is + analytics
+function buildGallery() {
+	const src = path.join(ROOT, 'gallery');
+	if (!fs.existsSync(src)) return;
+	copyDir(src, path.join(DIST, 'gallery'));
+	const f = path.join(DIST, 'gallery/index.html');
+	const ga = (page({ id: 'x', title: '', body: '' }).match(/<script>\(function\(\)\{var k='vw_notrack'[\s\S]*?<\/script>/) || [''])[0];
+	fs.writeFileSync(f, fs.readFileSync(f, 'utf8').replace('</body>', ga + '\n</body>'));
+}
+
 function copyDir(src, dst) {
 	fs.mkdirSync(dst, { recursive: true });
 	for (const f of fs.readdirSync(src)) {
@@ -391,7 +401,7 @@ function redirects() {
 }
 
 function sitemap(base = 'https://www.vincentweiler.com') {
-	const urls = ['/', ...SECTIONS.map((s) => `/${s}/`), ...Object.keys(projects).map((s) => `/${s}/`), '/info/', '/contact/', '/showreel/'];
+	const urls = ['/', ...SECTIONS.map((s) => `/${s}/`), ...Object.keys(projects).map((s) => `/${s}/`), '/info/', '/gallery/', '/contact/', '/showreel/'];
 	for (const u of ['/', '/info/']) { if (!pageImages.has(u)) pageImages.set(u, new Set()); pageImages.get(u).add(PORTRAIT); }
 	const img = (u) => [...(pageImages.get(u) || [])].map((s) => `<image:image><image:loc>${base}${s}</image:loc></image:image>`).join('');
 	fs.writeFileSync(path.join(DIST, 'sitemap.xml'), `<?xml version="1.0" encoding="UTF-8"?>\n<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9" xmlns:image="http://www.google.com/schemas/sitemap-image/1.1">\n${urls.map((u) => `<url><loc>${base}${u}</loc>${img(u)}</url>`).join('\n')}\n</urlset>\n`);
@@ -421,6 +431,7 @@ async function main() {
 	await buildInfo();
 	await buildContact();
 	await buildShowreel();
+	buildGallery();
 	redirects();
 	sitemap();
 	const missing = Object.keys(projects).filter((s) => !SECTIONS.some((n) => (sections[n].projects || []).some((it) => slugOf(it.project || it) === s)));
