@@ -370,14 +370,39 @@ async function buildShowreel() {
 	write('showreel/index.html', page({ id: 'showreel', title: 'Showreel', body, url: '/showreel/', ogImage: '/og/home.jpg', description: 'Showreel of Vincent Weiler, director of photography / chef opérateur (Paris) — commercials, beauty, fiction.' }));
 }
 
-// Gallery: static page in gallery/ (all project stills, original formats), linked from Info, copied as is + analytics
+// Gallery: every project still (gallery/photos.json + gallery/m/), same header as the site, linked from Info
 function buildGallery() {
 	const src = path.join(ROOT, 'gallery');
-	if (!fs.existsSync(src)) return;
+	if (!fs.existsSync(path.join(src, 'photos.json'))) return;
 	copyDir(src, path.join(DIST, 'gallery'));
-	const f = path.join(DIST, 'gallery/index.html');
-	const ga = (page({ id: 'x', title: '', body: '' }).match(/<script>\(function\(\)\{var k='vw_notrack'[\s\S]*?<\/script>/) || [''])[0];
-	fs.writeFileSync(f, fs.readFileSync(f, 'utf8').replace('</body>', ga + '\n</body>'));
+	const css = `#gallery .page-content{align-items:flex-start;padding:1.5rem}
+.gal{width:100%;line-height:1.25}
+.gal,.gal *{--font-size:1.2rem}
+.mobile .gal,.mobile .gal *{--font-size:1.5rem}
+.gal-sort{display:flex;justify-content:flex-end;gap:1.1em;color:#9c9c9c;margin:0 0 1.2rem}
+.gal-sort button{font:inherit;color:#9c9c9c;background:none;border:none;padding:0;cursor:pointer}
+.gal-sort button:hover,.gal-sort button.on{color:#030303}
+.gal-p{margin:0 0 2.2rem}
+.gal-h{display:flex;justify-content:space-between;align-items:baseline;gap:2rem;margin:0 0 .5rem}
+.gal-h span{text-align:right}
+.gal-rows{width:100%}
+.gal-row{display:flex;gap:4px;margin-bottom:4px}
+.gal-row img{display:block;cursor:zoom-in;background:#f2f2f2}
+.gal-lb{position:fixed;inset:0;z-index:1000;background:#fff;display:none;align-items:center;justify-content:center;font-size:1.2rem;font-family:"Diatype Substitute",sans-serif;color:#030303}
+.gal-lb.on{display:flex}
+.gal-lb img{max-width:calc(100vw - 8rem);max-height:calc(100vh - 7rem);object-fit:contain;cursor:pointer}
+.gal-lb button{position:absolute;background:none;border:none;font:inherit;color:#030303;cursor:pointer}
+.gal-x{top:1rem;right:1.2rem}
+.gal-prev,.gal-next{top:0;bottom:0;width:30%}
+.gal-prev{left:0;cursor:w-resize}.gal-next{right:0;cursor:e-resize}
+.gal-lb img{position:relative;z-index:1}
+.gal-cap{position:absolute;left:0;right:0;bottom:1rem;text-align:center}
+.gal-cap span{color:#9c9c9c;margin-left:.6em}
+.mobile .gal-lb{font-size:1.5rem}
+@media (max-width:760px){.gal-h{flex-direction:column;gap:.1rem}.gal-h span{text-align:left}.gal-sort{justify-content:flex-start;flex-wrap:wrap}.gal-lb img{max-width:100vw;max-height:calc(100vh - 6rem)}.gal-prev,.gal-next{display:none}}`;
+	const gal = `<div id="gal" class="gal"><div class="gal-sort">Sort by <button data-s="all" class="on">All</button><button data-s="Narrative">Narrative</button><button data-s="Commercials">Commercials</button><button data-s="Beauty">Beauty</button></div><div class="gal-list"></div></div><script src="/gallery/gallery.js" defer></script>`;
+	const body = headerDesktop() + '<br>\n</div>' + headerMobile({ big: true, nav: true }) + '<br>\n</div>' + gal;
+	write('gallery/index.html', page({ id: 'gallery', title: 'Gallery', body, css, url: '/gallery/', ogImage: '/og/home.jpg', description: 'Gallery of film stills by Vincent Weiler, director of photography / chef opérateur based in Paris — narrative, commercials and beauty.' }));
 }
 
 function copyDir(src, dst) {
