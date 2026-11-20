@@ -166,7 +166,7 @@ async function grid(list, cols, render, gutter = '1rem') {
 
 // ------------------------------------------------------------------ headers
 function navDesktop(active) {
-	const items = [['narrative', 'Narrative', '/narrative/'], ['commercials', 'Commercials', '/commercials/'], ['beauty', 'Beauty', '/beauty/'], ['info', 'Info', '/info/'], ['gallery', 'Gallery', '/gallery/']];
+	const items = [['narrative', 'Narrative', '/narrative/'], ['commercials', 'Commercials', '/commercials/'], ['beauty', 'Beauty', '/beauty/'], ['info', 'Info', '/info/']];
 	return columnSet(items.map(([k, label, href]) => ({ html: `<div style="text-align: center"><a href="${href}"${k === active ? ' class="active"' : ''}>${label}</a></div>` })), { gutter: '0rem', mobileGutter: '0.0rem', stack: true });
 }
 function headerDesktop(active) {
@@ -322,7 +322,7 @@ async function buildSection(name) {
 }
 
 async function buildHome() {
-	const nav = (cls, scale) => columnSet([['Narrative', '/narrative/'], ['Commercials', '/commercials/'], ['Beauty', '/beauty/'], ['Info', '/info/'], ['Gallery', '/gallery/']].map(([l, h]) => ({ html: `<a class="caption" href="${h}" style="color: rgb(255, 255, 255);${scale ? ' --font-scale: 1.25;' : ''}">${l}</a>` })), { gutter: '1rem' });
+	const nav = (cls, scale) => columnSet([['Narrative', '/narrative/'], ['Commercials', '/commercials/'], ['Beauty', '/beauty/'], ['Info', '/info/']].map(([l, h]) => ({ html: `<a class="caption" href="${h}" style="color: rgb(255, 255, 255);${scale ? ' --font-scale: 1.25;' : ''}">${l}</a>` })), { gutter: '1rem' });
 	const desk = `<div class="only-desktop"><h1 style="color: rgb(255, 255, 255); --font-scale: 1.5;"><a href="/">${esc(home.name)}</a></h1><h2 style="color: rgb(255, 230, 230); --font-scale: 1.5;"><a href="/">${esc(home.subtitle)}</a></h2><h2 style="color: rgb(255, 255, 255);"><br>
 <br>
 </h2><br>${nav('', true)}</div>`;
@@ -370,16 +370,6 @@ async function buildShowreel() {
 	write('showreel/index.html', page({ id: 'showreel', title: 'Showreel', body, url: '/showreel/', ogImage: '/og/home.jpg', description: 'Showreel of Vincent Weiler, director of photography / chef opérateur (Paris) — commercials, beauty, fiction.' }));
 }
 
-// Gallery: static page in gallery/ (all project stills, original formats), copied as is + analytics
-function buildGallery() {
-	const src = path.join(ROOT, 'gallery');
-	if (!fs.existsSync(src)) return;
-	copyDir(src, path.join(DIST, 'gallery'));
-	const f = path.join(DIST, 'gallery/index.html');
-	const ga = (page({ id: 'x', title: '', body: '' }).match(/<script>\(function\(\)\{var k='vw_notrack'[\s\S]*?<\/script>/) || [''])[0];
-	fs.writeFileSync(f, fs.readFileSync(f, 'utf8').replace('</body>', ga + '\n</body>'));
-}
-
 function copyDir(src, dst) {
 	fs.mkdirSync(dst, { recursive: true });
 	for (const f of fs.readdirSync(src)) {
@@ -401,7 +391,7 @@ function redirects() {
 }
 
 function sitemap(base = 'https://www.vincentweiler.com') {
-	const urls = ['/', ...SECTIONS.map((s) => `/${s}/`), ...Object.keys(projects).map((s) => `/${s}/`), '/info/', '/gallery/', '/contact/', '/showreel/'];
+	const urls = ['/', ...SECTIONS.map((s) => `/${s}/`), ...Object.keys(projects).map((s) => `/${s}/`), '/info/', '/contact/', '/showreel/'];
 	for (const u of ['/', '/info/']) { if (!pageImages.has(u)) pageImages.set(u, new Set()); pageImages.get(u).add(PORTRAIT); }
 	const img = (u) => [...(pageImages.get(u) || [])].map((s) => `<image:image><image:loc>${base}${s}</image:loc></image:image>`).join('');
 	fs.writeFileSync(path.join(DIST, 'sitemap.xml'), `<?xml version="1.0" encoding="UTF-8"?>\n<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9" xmlns:image="http://www.google.com/schemas/sitemap-image/1.1">\n${urls.map((u) => `<url><loc>${base}${u}</loc>${img(u)}</url>`).join('\n')}\n</urlset>\n`);
@@ -431,7 +421,6 @@ async function main() {
 	await buildInfo();
 	await buildContact();
 	await buildShowreel();
-	buildGallery();
 	redirects();
 	sitemap();
 	const missing = Object.keys(projects).filter((s) => !SECTIONS.some((n) => (sections[n].projects || []).some((it) => slugOf(it.project || it) === s)));
