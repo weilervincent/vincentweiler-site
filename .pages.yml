@@ -62,6 +62,11 @@ content:
         label: Crédits (ordinateur)
         type: string
         description: "Une ligne, ex. « SS26 campaign I Dir. Charlie Tronchot I Prod. Manon Merloz »."
+      - name: featuring
+        label: Personnalités à l'image
+        type: string
+        list: true
+        description: "Facultatif. Acteurs, actrices, artistes connus présents dans le projet (ex. « Sydney Sweeney »). Invisible sur la page, utilisé pour Google (texte des images, description)."
       - name: credits_mobile
         label: Crédits (téléphone)
         type: text

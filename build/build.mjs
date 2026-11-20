@@ -242,6 +242,8 @@ async function ogJpeg(src, name) {
 	await sharp(file).rotate().resize({ width: 1200, height: 630, fit: 'cover' }).toColourspace('srgb').jpeg({ quality: 88, mozjpeg: true }).toFile(path.join(DIST, 'og', name + '.jpg'));
 	return `/og/${name}.jpg`;
 }
+const featuring = (p) => (Array.isArray(p.featuring) ? p.featuring : p.featuring ? [p.featuring] : []).map((x) => String(x).trim()).filter(Boolean);
+const withNames = (p) => (featuring(p).length ? ` with ${featuring(p).join(', ')}` : '');
 const plainCredits = (p) => String(p.credits || '').replace(/\s+I\s+/g, ', ').replace(/\s+/g, ' ').trim();
 function write(rel, html) {
 	const out = path.join(DIST, rel);
@@ -253,7 +255,7 @@ function write(rel, html) {
 async function buildProject(p) {
 	const label = p.hover_title || p.title;
 	PAGE_URL = `/${p.slug}/`;
-	ALT = `${label}${p.credits ? ' — ' + plainCredits(p) : ''} — cinematography by Vincent Weiler`;
+	ALT = `${label}${withNames(p)}${p.credits ? ' — ' + plainCredits(p) : ''} — cinematography by Vincent Weiler`;
 	const tw = Math.min(11, Math.max(1, parseInt(p.title_width) || 5));
 	const titleRow = (credits) => columnSet([
 		{ span: tw, html: `<div style="text-align: left"><b>${esc(p.title)}</b></div>` },
@@ -294,8 +296,8 @@ async function buildProject(p) {
 	const body = headerDesktop() + desk + '</div>' + headerMobile({ big: true, section: p.section }) + mob + '</div>';
 	const og = await ogJpeg((p.thumbnails || [])[0], p.slug);
 	const secName = sectionLabel[p.section] || '';
-	const description = `${label}${p.credits ? ' — ' + plainCredits(p) : ''}. Director of photography / chef opérateur : Vincent Weiler (Paris).${secName ? ' ' + secName + '.' : ''}`;
-	const jsonld = { '@context': 'https://schema.org', '@type': 'CreativeWork', name: label, url: `${SITE}/${p.slug}/`, description, image: og ? SITE + og : undefined, contributor: { '@type': 'Person', '@id': SITE + '/#vincent', name: 'Vincent Weiler', jobTitle: 'Director of Photography' } };
+	const description = `${label}${withNames(p)}${p.credits ? ' — ' + plainCredits(p) : ''}. Director of photography / chef opérateur : Vincent Weiler (Paris).${secName ? ' ' + secName + '.' : ''}`;
+	const jsonld = { '@context': 'https://schema.org', '@type': 'CreativeWork', name: label, url: `${SITE}/${p.slug}/`, description, image: og ? SITE + og : undefined, contributor: { '@type': 'Person', '@id': SITE + '/#vincent', name: 'Vincent Weiler', jobTitle: 'Director of Photography' }, ...(featuring(p).length ? { actor: featuring(p).map((n) => ({ '@type': 'Person', name: n })) } : {}) };
 	write(`${p.slug}/index.html`, page({ id: `p-${p.slug}`, title: label, body, ogImage: og, description, url: `/${p.slug}/`, jsonld }));
 }
 
@@ -308,7 +310,7 @@ async function buildSection(name) {
 		const href = `/${p.slug}/`;
 		const thumbs = (p.thumbnails || []).filter(Boolean);
 		PAGE_URL = `/${name}/`;
-		ALT = `${p.hover_title || p.title} — cinematography by Vincent Weiler`;
+		ALT = `${p.hover_title || p.title}${withNames(p)} — cinematography by Vincent Weiler`;
 		const cap = `<a class="proj-cap" href="${href}" aria-label="${esc(p.hover_title || p.title)}"><span>${esc(p.hover_title || p.title)}</span></a>`;
 		desk += `<div class="proj-row">` + columnSet(await Promise.all(thumbs.map(async (t) => ({ html: await imgItem(t, { href, sizes: `${Math.round(90 / thumbs.length)}vw` }) }))), { gutter: '0rem', stack: false }) + cap + '</div><br>\n';
 		mob += `<div class="proj-row proj-row-m">` + await imgItem(p.mobile_thumbnail || thumbs[Math.floor(thumbs.length / 2)], { href, style: 'padding: 0.2rem;' }) + cap + '</div>';
