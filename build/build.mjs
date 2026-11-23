@@ -296,7 +296,7 @@ async function buildProject(p) {
 			desk += t; mob += t;
 		}
 	}
-	const body = headerDesktop() + desk + '</div>' + headerMobile({ big: true, section: p.section }) + mob + '</div>';
+	const body = headerDesktop() + desk + '</div>' + headerMobile({ big: true, nav: p.section || true }) + mob + '</div>';
 	const og = await ogJpeg((p.thumbnails || [])[0], p.slug);
 	const secName = sectionLabel[p.section] || '';
 	const description = `${label}${withNames(p)}${p.credits ? ' — ' + plainCredits(p) : ''}. Director of photography / chef opérateur : Vincent Weiler (Paris).${secName ? ' ' + secName + '.' : ''}`;
