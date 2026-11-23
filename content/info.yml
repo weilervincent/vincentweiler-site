@@ -6,14 +6,12 @@ photos:
   - /media/info/info-05.webp
   - /media/info/info-06.webp
   - /media/info/info-07.webp
-text: Vincent is a director of photography who studied at Central Saint Martins
-  and the London Film School and has gained attention in commercial areas with
-  his dramatic and documentary work. After a few years in New York, he is now
-  based in Paris.
-clients_title: "Client Selection:"
-clients: Lancôme Paris, Uniqlo, Mônot, Prada Beauty, Armani Beauty, France TV,
-  On Running, Harper’s Bazaar, Atelier Swarovski, Valentino Beauty, Vichy
-  Laboratoires, Marcia Wear, Vice TV
+text: |-
+  I'm a director of photography based in Paris, working across commercials, beauty, fashion and narrative film.
+  I studied at Central Saint Martins and the London Film School, and spent years as a camera assistant in London and New York. Fluent in French and English, I shoot on film and digital.
+  Feel free to get in touch.
+clients_title: "Selected clients"
+clients: Prada Beauty, Armani Beauty, Valentino Beauty, Lancôme, Atelier Swarovski, Uniqlo, On Running, Harper’s Bazaar, Mônot, Vichy, Marcia, France TV, Vice TV
 links:
   - label: Contact
     url: /contact
@@ -23,5 +21,5 @@ links:
     url: /gallery
   - label: Instagram
     url: https://www.instagram.com/vincentweiler/
-  - label: Imdb
+  - label: IMDb
     url: https://www.imdb.com/name/nm5008256/?ref_=nv_sr_srsg_0_tt_2_nm_6_q_vincent%2520weiler
