@@ -66,7 +66,7 @@ content:
         label: Personnalités à l'image
         type: string
         list: true
-        description: "Facultatif. Acteurs, actrices, artistes connus présents dans le projet (ex. « Sydney Sweeney »). Invisible sur la page, utilisé pour Google (texte des images, description)."
+        description: "Facultatif. Acteurs, actrices, artistes connus présents dans le projet (ex. « Sydney Sweeney »). Affiché au survol des vignettes sous le titre (« with … ») et utilisé pour Google."
       - name: credits_mobile
         label: Crédits (téléphone)
         type: text
