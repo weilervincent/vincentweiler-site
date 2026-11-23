@@ -1,0 +1,26 @@
+title: All
+projects:
+- project: content/projects/the-diggers.yml
+- project: content/projects/lancome.yml
+- project: content/projects/coggia.yml
+- project: content/projects/prada.yml
+- project: content/projects/uniqlo-u-ss23.yml
+- project: content/projects/la-boheme-2050.yml
+- project: content/projects/marcia.yml
+- project: content/projects/armani.yml
+- project: content/projects/los-paisajes.yml
+- project: content/projects/harpers-bazaar.yml
+- project: content/projects/valentino.yml
+- project: content/projects/monot.yml
+- project: content/projects/positive-education.yml
+- project: content/projects/on-running.yml
+- project: content/projects/viktor-rolf.yml
+- project: content/projects/dysphoria.yml
+- project: content/projects/rinaldi-fw-24.yml
+- project: content/projects/avsten.yml
+- project: content/projects/cour-des-grandes.yml
+- project: content/projects/uniqlo-u-fw22.yml
+- project: content/projects/despues-de-la-z.yml
+- project: content/projects/vichy.yml
+- project: content/projects/everybody-everyone.yml
+- project: content/projects/swarovski.yml

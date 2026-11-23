@@ -16,6 +16,13 @@
    - *Photos en grille* et *Texte*.
 5. Enregistre (*Save*).
 6. Va dans **Rubriques**, ouvre la bonne liste, ajoute le projet et place-le à l'endroit voulu. Enregistre.
+7. Pour la page **Work** : **Rubriques › All — ordre des projets**, ajoute le projet et place-le où tu veux dans « All ». (S'il n'y est pas, il apparaît quand même, à la fin.)
+
+## Page Work (vincentweiler.com/work/)
+- C'est la page de tous les projets, ouverte en cliquant sur l'accueil. Le menu All · Narrative · Commercials · Beauty · Info y mène depuis toutes les pages.
+- **Ordre de « All »** : Rubriques › *All — ordre des projets*. Glisse les projets dans l'ordre voulu.
+- **Narrative, Commercials, Beauty** gardent l'ordre de leur propre liste dans Rubriques.
+- Les vignettes Beauty y sont recadrées (presque carrées) pour avoir la même hauteur que les autres. Si tu changes une vignette Beauty, demande à Claude d'ajuster le cadrage.
 
 ## Changer ou réordonner des photos
 Ouvre le projet, puis le bloc concerné. Tu peux :

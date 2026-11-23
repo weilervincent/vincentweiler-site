@@ -337,8 +337,15 @@ const WORK_CROP = {
 const WORK_CROP_MOBILE = { lancome: 34.7, prada: 33.7, armani: 33.7, valentino: 33.2, 'viktor-rolf': 26 };
 async function buildWork() {
 	const lists = Object.fromEntries(SECTIONS.map((n) => [n, (sections[n].projects || []).map((it) => projects[slugOf(it.project || it)]).filter(Boolean)]));
-	const order = [];
-	for (let i = 0; i < Math.max(...SECTIONS.map((n) => lists[n].length)); i++) for (const n of SECTIONS) if (lists[n][i]) order.push([n, lists[n][i]]);
+	const interleaved = [];
+	for (let i = 0; i < Math.max(...SECTIONS.map((n) => lists[n].length)); i++) for (const n of SECTIONS) if (lists[n][i]) interleaved.push(lists[n][i]);
+	// « All » order: content/sections/all.yml (editable in Pages CMS), then any project not listed there
+	const allFile = fs.existsSync(path.join(ROOT, 'content/sections/all.yml')) ? read('content/sections/all.yml') : {};
+	const listed = (allFile.projects || []).map((it) => projects[slugOf(it.project || it)]).filter(Boolean);
+	const inSections = new Set(interleaved.map((p) => p.slug));
+	const seen = new Set();
+	const order = [...listed, ...interleaved].filter((p) => inSections.has(p.slug) && !seen.has(p.slug) && seen.add(p.slug)).map((p) => [SECTIONS.find((n) => lists[n].includes(p)), p]);
+	const secIndex = (p) => { const n = SECTIONS.find((n) => lists[n].includes(p)); return lists[n].indexOf(p); };
 	let desk = '', mob = '';
 	PAGE_URL = '/work/';
 	for (const [sec, p] of order) {
@@ -348,8 +355,8 @@ async function buildWork() {
 		const cap = `<a class="proj-cap" href="${href}" aria-label="${esc(p.hover_title || p.title)}"><span>${esc(p.hover_title || p.title)}</span></a>`;
 		const crop = sec === 'beauty';
 		const pos = (t, win) => `object-position:50% ${(t / (100 - win) * 100).toFixed(1)}%`;
-		desk += `<div data-s="${sec}" class="proj-row">` + columnSet(await Promise.all(thumbs.map(async (t, i) => ({ html: await imgItem(t, { href, sizes: `${Math.round(90 / thumbs.length)}vw`, style: crop ? pos((WORK_CROP[p.slug] || [])[i] ?? 15, 52.73) : '' }) }))), { gutter: '0rem', stack: false }) + cap + '</div><br>\n';
-		mob += `<div data-s="${sec}" class="proj-row proj-row-m">` + await imgItem(p.mobile_thumbnail || thumbs[Math.floor(thumbs.length / 2)], { href, style: 'padding: 0.2rem;' + (crop ? pos(WORK_CROP_MOBILE[p.slug] ?? 34, 31.64) : '') }) + cap + '</div>';
+		desk += `<div data-s="${sec}" data-i="${secIndex(p)}" class="proj-row">` + columnSet(await Promise.all(thumbs.map(async (t, i) => ({ html: await imgItem(t, { href, sizes: `${Math.round(90 / thumbs.length)}vw`, style: crop ? pos((WORK_CROP[p.slug] || [])[i] ?? 15, 52.73) : '' }) }))), { gutter: '0rem', stack: false }) + cap + '</div><br>\n';
+		mob += `<div data-s="${sec}" data-i="${secIndex(p)}" class="proj-row proj-row-m">` + await imgItem(p.mobile_thumbnail || thumbs[Math.floor(thumbs.length / 2)], { href, style: 'padding: 0.2rem;' + (crop ? pos(WORK_CROP_MOBILE[p.slug] ?? 34, 31.64) : '') }) + cap + '</div>';
 	}
 	const items = [['all', 'All'], ...SECTIONS.map((n) => [n, sectionLabel[n]])];
 	const nav = `<column-set class="site-nav" style="--cols:5;--gutter:0rem;--mobile-gutter:0.0rem;" mobile-stack>` + items.map(([k, l]) => `<column-unit style="grid-column:span 1"><div style="text-align: center"><a href="/work/${k === 'all' ? '' : '#' + k}" data-f="${k}"${k === 'all' ? ' class="active"' : ''}>${l}</a></div></column-unit>`).join('') + `<column-unit style="grid-column:span 1"><div style="text-align: center"><a href="/info/">Info</a></div></column-unit></column-set>`;
@@ -358,7 +365,7 @@ async function buildWork() {
 	const css = `#work.page{min-height:var(--viewport-height)} #work .page-content{align-items:flex-start;padding:1.5rem}
 #work .proj-row[data-s="beauty"]:not(.proj-row-m) media-item img{aspect-ratio:16/15;object-fit:cover}
 #work .proj-row-m[data-s="beauty"] media-item img{aspect-ratio:16/9;object-fit:cover}`;
-	const js = `<script>(function(){var L=document.querySelectorAll('a[data-f]');function set(f){if(!/^(narrative|commercials|beauty)$/.test(f))f='all';L.forEach(function(a){a.classList.toggle('active',a.dataset.f===f);});document.querySelectorAll('.proj-row[data-s]').forEach(function(r){var on=f==='all'||r.dataset.s===f;r.style.display=on?'':'none';var b=r.nextElementSibling;if(b&&b.tagName==='BR')b.style.display=on?'':'none';});}L.forEach(function(a){a.addEventListener('click',function(e){e.preventDefault();var f=a.dataset.f;history.replaceState(null,'',f==='all'?'/work/':'#'+f);set(f);scrollTo(0,0);});});set(location.hash.slice(1));addEventListener('hashchange',function(){set(location.hash.slice(1));});})();</script>`;
+	const js = `<script>(function(){var L=document.querySelectorAll('a[data-f]');var G=[];[':not(.proj-row-m)','.proj-row-m'].forEach(function(q){var rs=[].slice.call(document.querySelectorAll('.proj-row[data-s]'+q));if(!rs.length)return;var last=rs[rs.length-1],nb=last.nextElementSibling&&last.nextElementSibling.tagName==='BR'?last.nextElementSibling:null;var end=document.createComment('end');(nb||last).after(end);G.push({parent:end.parentNode,end:end,items:rs.map(function(r,o){var b=r.nextElementSibling;return {r:r,b:b&&b.tagName==='BR'?b:null,o:o,i:+r.dataset.i};})});});function set(f){if(!/^(narrative|commercials|beauty)$/.test(f))f='all';L.forEach(function(a){a.classList.toggle('active',a.dataset.f===f);});G.forEach(function(g){g.items.slice().sort(function(a,b){return f==='all'?a.o-b.o:a.i-b.i;}).forEach(function(it){var on=f==='all'||it.r.dataset.s===f;it.r.style.display=on?'':'none';if(it.b)it.b.style.display=on?'':'none';g.parent.insertBefore(it.r,g.end);if(it.b)g.parent.insertBefore(it.b,g.end);});});}L.forEach(function(a){a.addEventListener('click',function(e){e.preventDefault();var f=a.dataset.f;history.replaceState(null,'',f==='all'?'/work/':'#'+f);set(f);scrollTo(0,0);});});set(location.hash.slice(1));addEventListener('hashchange',function(){set(location.hash.slice(1));});})();</script>`;
 	const body = hd + desk + '</div>' + hm + '<br>' + mob + '</div>' + js;
 	const description = `Work — ${order.map(([, p]) => p.hover_title || p.title).join(', ')}. Vincent Weiler, director of photography / chef opérateur, Paris — narrative, commercials, beauty.`;
 	const og = await ogJpeg(((order[0] || [])[1]?.thumbnails || [])[0], 'work');

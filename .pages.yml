@@ -148,6 +148,29 @@ content:
     label: Rubriques
     type: group
     items:
+      - name: all
+        label: All — ordre des projets (page Work)
+        type: file
+        path: content/sections/all.yml
+        format: yaml
+        fields:
+          - { name: title, label: Titre, type: string }
+          - name: projects
+            label: Projets (dans l'ordre d'affichage de « All »)
+            description: "Ordre de la page Work quand « All » est sélectionné. Les filtres Narrative, Commercials et Beauty gardent l'ordre de leur rubrique. Un projet absent de cette liste s'affiche quand même, à la fin."
+            type: object
+            list:
+              collapsible:
+                collapsed: true
+                summary: "{project}"
+            fields:
+              - name: project
+                label: Projet
+                type: reference
+                options:
+                  collection: projects
+                  value: "{path}"
+                  label: "{title}"
       - name: narrative
         label: Narrative — ordre des projets
         type: file
