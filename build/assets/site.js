@@ -101,11 +101,18 @@
 
 	document.querySelectorAll('gallery-slideshow').forEach(function (el) { Slideshow(el); });
 
-	// fade-up scroll animation for media (skipped inside slideshows / when disabled)
+	// Project lists (Work, rubriques): every thumbnail loads at once, no reveal on scroll.
+	// Only the visible version (desktop or mobile) is forced, so the hidden one isn't downloaded too.
+	document.querySelectorAll('.proj-row img[loading="lazy"]').forEach(function (img) {
+		var v = img.closest('.only-desktop, .only-mobile');
+		if (!v || getComputedStyle(v).display !== 'none') img.loading = 'eager';
+	});
+
+	// fade-up scroll animation for media (skipped inside slideshows, project lists / when disabled)
 	var reduce = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
 	if ('IntersectionObserver' in window && !reduce) {
 		var targets = Array.prototype.slice.call(document.querySelectorAll('bodycopy media-item')).filter(function (m) {
-			return !m.hasAttribute('no-anim') && !m.closest('gallery-slideshow');
+			return !m.hasAttribute('no-anim') && !m.closest('gallery-slideshow') && !m.closest('.proj-row');
 		});
 		var io = new IntersectionObserver(function (entries) {
 			entries.forEach(function (en) {
