@@ -326,14 +326,53 @@ async function buildSection(name) {
 	write(`${name}/index.html`, page({ id: `s-${name}`, title: sec.title || sectionLabel[name], body, css, description, url: `/${name}/`, ogImage: og }));
 }
 
+// Work: every project, as on the section pages (same thumbnails), Narrative / Commercials / Beauty interleaved
+// in their section order, filtered in place by the menu All · Narrative · Commercials · Beauty · Info.
+// Beauty thumbnails (9:16) are cropped so each row has the same height as a 3 × 16:9 row.
+// Crop = top edge of the visible window, in % of the image height (faces: eyes in the upper third, room under the chin).
+const WORK_CROP = {
+	lancome: [13, 19, 24.2, 24, 22], prada: [13, 8, 23.2, 15, 27], armani: [10, 11, 23.2, 23, 14],
+	valentino: [5, 12, 23, 8, 13], 'viktor-rolf': [24, 23, 20, 8, 12],
+};
+const WORK_CROP_MOBILE = { lancome: 34.7, prada: 33.7, armani: 33.7, valentino: 33.2, 'viktor-rolf': 26 };
+async function buildWork() {
+	const lists = Object.fromEntries(SECTIONS.map((n) => [n, (sections[n].projects || []).map((it) => projects[slugOf(it.project || it)]).filter(Boolean)]));
+	const order = [];
+	for (let i = 0; i < Math.max(...SECTIONS.map((n) => lists[n].length)); i++) for (const n of SECTIONS) if (lists[n][i]) order.push([n, lists[n][i]]);
+	let desk = '', mob = '';
+	PAGE_URL = '/work/';
+	for (const [sec, p] of order) {
+		const href = `/${p.slug}/`;
+		const thumbs = (p.thumbnails || []).filter(Boolean);
+		ALT = `${p.hover_title || p.title}${withNames(p)} — cinematography by Vincent Weiler`;
+		const cap = `<a class="proj-cap" href="${href}" aria-label="${esc(p.hover_title || p.title)}"><span>${esc(p.hover_title || p.title)}</span></a>`;
+		const crop = sec === 'beauty';
+		const pos = (t, win) => `object-position:50% ${(t / (100 - win) * 100).toFixed(1)}%`;
+		desk += `<div data-s="${sec}" class="proj-row">` + columnSet(await Promise.all(thumbs.map(async (t, i) => ({ html: await imgItem(t, { href, sizes: `${Math.round(90 / thumbs.length)}vw`, style: crop ? pos((WORK_CROP[p.slug] || [])[i] ?? 15, 52.73) : '' }) }))), { gutter: '0rem', stack: false }) + cap + '</div><br>\n';
+		mob += `<div data-s="${sec}" class="proj-row proj-row-m">` + await imgItem(p.mobile_thumbnail || thumbs[Math.floor(thumbs.length / 2)], { href, style: 'padding: 0.2rem;' + (crop ? pos(WORK_CROP_MOBILE[p.slug] ?? 34, 31.64) : '') }) + cap + '</div>';
+	}
+	const items = [['all', 'All'], ...SECTIONS.map((n) => [n, sectionLabel[n]])];
+	const nav = `<column-set class="work-nav" style="--cols:5;--gutter:0rem;--mobile-gutter:0.0rem;" mobile-stack>` + items.map(([k, l]) => `<column-unit style="grid-column:span 1"><div style="text-align: center"><a href="/work/${k === 'all' ? '' : '#' + k}" data-f="${k}"${k === 'all' ? ' class="active"' : ''}>${l}</a></div></column-unit>`).join('') + `<column-unit style="grid-column:span 1"><div style="text-align: center"><a href="/info/">Info</a></div></column-unit></column-set>`;
+	const hd = headerDesktop().replace(/<column-set[\s\S]*<\/column-set>/, nav);
+	const hm = headerMobile({ big: true, nav: true }).replace(/<column-set[\s\S]*<\/column-set>/, nav);
+	const css = `#work.page{min-height:var(--viewport-height)} #work .page-content{align-items:flex-start;padding:1.5rem}
+#work .work-nav *{--font-scale:0.78}
+#work .proj-row[data-s="beauty"]:not(.proj-row-m) media-item img{aspect-ratio:16/15;object-fit:cover}
+#work .proj-row-m[data-s="beauty"] media-item img{aspect-ratio:16/9;object-fit:cover}`;
+	const js = `<script>(function(){var L=document.querySelectorAll('a[data-f]');function set(f){if(!/^(narrative|commercials|beauty)$/.test(f))f='all';L.forEach(function(a){a.classList.toggle('active',a.dataset.f===f);});document.querySelectorAll('.proj-row[data-s]').forEach(function(r){var on=f==='all'||r.dataset.s===f;r.style.display=on?'':'none';var b=r.nextElementSibling;if(b&&b.tagName==='BR')b.style.display=on?'':'none';});}L.forEach(function(a){a.addEventListener('click',function(e){e.preventDefault();var f=a.dataset.f;history.replaceState(null,'',f==='all'?'/work/':'#'+f);set(f);scrollTo(0,0);});});set(location.hash.slice(1));addEventListener('hashchange',function(){set(location.hash.slice(1));});})();</script>`;
+	const body = hd + desk + '</div>' + hm + '<br>' + mob + '</div>' + js;
+	const description = `Work — ${order.map(([, p]) => p.hover_title || p.title).join(', ')}. Vincent Weiler, director of photography / chef opérateur, Paris — narrative, commercials, beauty.`;
+	const og = await ogJpeg(((order[0] || [])[1]?.thumbnails || [])[0], 'work');
+	write('work/index.html', page({ id: 'work', title: 'Work', body, css, description, url: '/work/', ogImage: og }));
+}
+
 async function buildHome() {
-	const nav = (cls, scale) => columnSet([['Narrative', '/narrative/'], ['Commercials', '/commercials/'], ['Beauty', '/beauty/'], ['Info', '/info/']].map(([l, h]) => ({ html: `<a class="caption" href="${h}" style="color: rgb(255, 255, 255);${scale ? ' --font-scale: 1.25;' : ''}">${l}</a>` })), { gutter: '1rem' });
-	const desk = `<div class="only-desktop"><h1 style="color: rgb(255, 255, 255); --font-scale: 1.5;"><a href="/">${esc(home.name)}</a></h1><h2 style="color: rgb(255, 230, 230); --font-scale: 1.5;"><a href="/">${esc(home.subtitle)}</a></h2><h2 style="color: rgb(255, 255, 255);"><br>
+	const desk = `<div class="only-desktop"><h1 style="color: rgb(255, 255, 255); --font-scale: 1.5;"><a href="/work/">${esc(home.name)}</a></h1><h2 style="color: rgb(255, 230, 230); --font-scale: 1.5;"><a href="/work/">${esc(home.subtitle)}</a></h2><h2 style="color: rgb(255, 255, 255);"><br>
 <br>
-</h2><br>${nav('', true)}</div>`;
-	const mob = `<div class="only-mobile"><div style="text-align: center"><h1 style="color: rgb(255, 255, 255);"><a href="/">${esc(home.name)}</a></h1></div><div style="text-align: center"><h2 style="color: rgb(255, 255, 255);"><a href="/">${esc(home.subtitle)}</a><br>
+</h2></div>`;
+	const mob = `<div class="only-mobile"><div style="text-align: center"><h1 style="color: rgb(255, 255, 255);"><a href="/work/">${esc(home.name)}</a></h1></div><div style="text-align: center"><h2 style="color: rgb(255, 255, 255);"><a href="/work/">${esc(home.subtitle)}</a><br>
 <br>
-</h2></div><br>${nav('', false)}</div>`;
+</h2></div></div>`;
 	PAGE_URL = '/';
 	ALT = 'Vincent Weiler, director of photography — film still';
 	const wall = async (list, cls) => {
@@ -343,9 +382,16 @@ async function buildHome() {
 		return `<div class="backdrop wallpaper ${cls}" style="opacity:0.95"><gallery-slideshow class="wallpaper-slideshow" data-options='${esc(JSON.stringify(opts))}'>${items.join('')}</gallery-slideshow></div>`;
 	};
 	const wallpaper = await wall(home.background_images, 'only-desktop') + await wall(home.background_images_mobile?.length ? home.background_images_mobile : home.background_images, 'only-mobile');
-	const css = `#home.page{min-height:var(--viewport-height)} #home .page-content{align-items:center;width:100%} #home .page-layout{align-items:center}`;
+	const css = `#home.page{min-height:var(--viewport-height)} #home .page-content{align-items:center;width:100%} #home .page-layout{align-items:center}
+html:has(#home){cursor:pointer}
+.vw-arrow{position:fixed;left:50%;bottom:2.2rem;transform:translateX(-50%);z-index:50;opacity:0;transition:opacity 1.4s ease;pointer-events:none;color:#fff}
+.vw-arrow.on{opacity:.8;animation:vwnudge 3.2s ease-in-out 1.4s infinite}
+.vw-arrow svg{display:block;width:18px;height:34px}
+@keyframes vwnudge{0%,100%{transform:translate(-50%,0)}50%{transform:translate(-50%,3px)}}
+@media (prefers-reduced-motion:reduce){.vw-arrow.on{animation:none}}`;
+	const enter = `<div class="vw-arrow" aria-hidden="true"><svg viewBox="0 0 18 34" fill="none" stroke="currentColor" stroke-width="1"><path d="M9 1v31M2 25l7 7 7-7"/></svg></div><script>(function(){setTimeout(function(){var a=document.querySelector('.vw-arrow');if(a)a.classList.add('on');},2500);function go(){location.href='/work/';}document.addEventListener('click',function(e){if(e.target.closest('a'))e.preventDefault();go();});addEventListener('keydown',function(e){if(e.key==='Enter'||e.key===' '||e.key==='ArrowDown')go();});})();</script>`;
 	const og = await ogJpeg((home.background_images || [])[0], 'home');
-	write('index.html', page({ id: 'home', title: '', body: desk + mob, css, wallpaper, ogImage: og, url: '/' }));
+	write('index.html', page({ id: 'home', title: '', body: desk + mob + enter, css, wallpaper, ogImage: og, url: '/' }));
 	write('404.html', page({ id: 'home', title: '', body: desk + mob, css, wallpaper }));
 }
 
@@ -434,7 +480,7 @@ function redirects() {
 }
 
 function sitemap(base = 'https://www.vincentweiler.com') {
-	const urls = ['/', ...SECTIONS.map((s) => `/${s}/`), ...Object.keys(projects).map((s) => `/${s}/`), '/info/', '/gallery/', '/contact/', '/showreel/'];
+	const urls = ['/', '/work/', ...SECTIONS.map((s) => `/${s}/`), ...Object.keys(projects).map((s) => `/${s}/`), '/info/', '/gallery/', '/contact/', '/showreel/'];
 	for (const u of ['/', '/info/']) { if (!pageImages.has(u)) pageImages.set(u, new Set()); pageImages.get(u).add(PORTRAIT); }
 	const img = (u) => [...(pageImages.get(u) || [])].map((s) => `<image:image><image:loc>${base}${s}</image:loc></image:image>`).join('');
 	fs.writeFileSync(path.join(DIST, 'sitemap.xml'), `<?xml version="1.0" encoding="UTF-8"?>\n<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9" xmlns:image="http://www.google.com/schemas/sitemap-image/1.1">\n${urls.map((u) => `<url><loc>${base}${u}</loc>${img(u)}</url>`).join('\n')}\n</urlset>\n`);
@@ -459,6 +505,7 @@ async function main() {
 	await prepareImages(all);
 
 	await buildHome();
+	await buildWork();
 	for (const s of SECTIONS) await buildSection(s);
 	for (const p of Object.values(projects)) await buildProject(p);
 	await buildInfo();
