@@ -179,7 +179,7 @@ function headerMobile({ big = true, section, nav = false } = {}) {
 	const name = `<a class="heading-1-copy" href="/" style="color: rgb(0, 0, 0);">${esc(home.name)}</a>`;
 	return `<div class="only-mobile"><div style="text-align: center">${big ? `<span style="--font-scale: 1.75;">${name}</span>` : name}</div><div style="text-align: center"><a class="heading-2-black" href="/" style="--font-scale: 1.6;">${esc(home.subtitle)}</a><br>
 <br>
-${section ? `<a class="caption-black" href="/${section}/" style="color: rgb(0, 0, 0); --font-scale: 0.75;">${sectionLabel[section]}</a>` : ''}</div>${nav ? navDesktop() : ''}<br>
+${section ? `<a class="caption-black" href="/${section}/" style="color: rgb(0, 0, 0); --font-scale: 0.75;">${sectionLabel[section]}</a>` : ''}</div>${nav ? navDesktop(nav === true ? undefined : nav) : ''}<br>
 `;
 }
 
@@ -319,7 +319,7 @@ async function buildSection(name) {
 		mob += `<div class="proj-row proj-row-m">` + await imgItem(p.mobile_thumbnail || thumbs[Math.floor(thumbs.length / 2)], { href, style: 'padding: 0.2rem;' }) + cap + '</div>';
 	}
 	const css = `#s-${name}.page{min-height:var(--viewport-height)} #s-${name} .page-content{align-items:flex-start;padding:1.5rem}`;
-	const body = headerDesktop(name) + desk + '</div>' + headerMobile({ big: true }) + '<br>' + mob + '</div>';
+	const body = headerDesktop(name) + desk + '</div>' + headerMobile({ big: true, nav: name }) + '<br>' + mob + '</div>';
 	const secDesc = { narrative: 'Narrative work — feature films, short films and music videos (fiction, courts-métrages, clips)', commercials: 'Commercials — fashion and brand campaigns (publicité, films de marque)', beauty: 'Beauty — luxury beauty and fragrance campaigns (publicité beauté, luxe)' }[name] || '';
 	const description = `${secDesc}${secDesc ? '. ' : ''}${list.map((p) => p.hover_title || p.title).join(', ')}. Vincent Weiler, director of photography / chef opérateur, Paris.`;
 	const og = await ogJpeg(((list[0] || {}).thumbnails || [])[0], name);
@@ -357,7 +357,7 @@ async function buildInfo() {
 ${esc(info.clients)}</i></span></span></div>`;
 	const links = `<div class="info-links" style="text-align: left"><span style="color: rgb(0, 0, 0); --font-scale: 0.9;">${(info.links || []).map((l) => `<a href="${esc(l.url)}"${/^https?:/.test(l.url) ? ' target="_blank" rel="noopener"' : ''}>→ ${esc(l.label)}</a>`).join('')}</span></div>`;
 	const row = columnSet([{ span: 5, html: ss }, { span: 5, html: text }, { span: 2, html: links }], { gutter: '2.6rem', stack: true });
-	const body = headerDesktop('info') + '</div>' + headerMobile({ big: true }) + '</div>' + row;
+	const body = headerDesktop('info') + '</div>' + headerMobile({ big: true, nav: 'info' }) + '<br>\n</div>' + row;
 	write('info/index.html', page({ id: 'info', title: 'Info', body, url: '/info/', ogImage: PORTRAIT, description: `${String(info.text || '').replace(/\s+/g, ' ').trim()} ${info.clients_title || ''} ${info.clients || ''}`.trim() }));
 }
 
