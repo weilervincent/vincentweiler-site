@@ -240,3 +240,6 @@ html.mobile #info column-set { row-gap: 2.2rem !important; }
 html.mobile #info .only-mobile column-set { row-gap: var(--m-gutter) !important; } /* menu : même interlignage que les autres pages */
 html.mobile #info .info-text, html.mobile #info .info-links { padding: 0 0.9rem; }
 html.mobile #info .info-links a { margin-bottom: 0; }
+
+/* Menu All · Narrative · Commercials · Beauty · Info, same size on every page */
+.site-nav, .site-nav * { --font-scale: 0.78; }

@@ -166,8 +166,8 @@ async function grid(list, cols, render, gutter = '1rem') {
 
 // ------------------------------------------------------------------ headers
 function navDesktop(active) {
-	const items = [['narrative', 'Narrative', '/narrative/'], ['commercials', 'Commercials', '/commercials/'], ['beauty', 'Beauty', '/beauty/'], ['info', 'Info', '/info/']];
-	return columnSet(items.map(([k, label, href]) => ({ html: `<div style="text-align: center"><a href="${href}"${k === active ? ' class="active"' : ''}>${label}</a></div>` })), { gutter: '0rem', mobileGutter: '0.0rem', stack: true });
+	const items = [['all', 'All', '/work/'], ['narrative', 'Narrative', '/work/#narrative'], ['commercials', 'Commercials', '/work/#commercials'], ['beauty', 'Beauty', '/work/#beauty'], ['info', 'Info', '/info/']];
+	return columnSet(items.map(([k, label, href]) => ({ html: `<div style="text-align: center"><a href="${href}"${k === active ? ' class="active"' : ''}>${label}</a></div>` })), { gutter: '0rem', mobileGutter: '0.0rem', stack: true }).replace('<column-set ', '<column-set class="site-nav" ');
 }
 function headerDesktop(active) {
 	return `<div class="only-desktop"><div style="text-align: center"><a class="heading-1-copy" href="/" style="color: rgb(0, 0, 0); --font-scale: 1.22;">${esc(home.name)}</a></div><div style="text-align: center"><a class="heading-2-black" href="/" style="--font-scale: 1.15;">${esc(home.subtitle)}</a><br>
@@ -179,7 +179,7 @@ function headerMobile({ big = true, section, nav = false } = {}) {
 	const name = `<a class="heading-1-copy" href="/" style="color: rgb(0, 0, 0);">${esc(home.name)}</a>`;
 	return `<div class="only-mobile"><div style="text-align: center">${big ? `<span style="--font-scale: 1.75;">${name}</span>` : name}</div><div style="text-align: center"><a class="heading-2-black" href="/" style="--font-scale: 1.6;">${esc(home.subtitle)}</a><br>
 <br>
-${section ? `<a class="caption-black" href="/${section}/" style="color: rgb(0, 0, 0); --font-scale: 0.75;">${sectionLabel[section]}</a>` : ''}</div>${nav ? navDesktop(nav === true ? undefined : nav) : ''}<br>
+${section ? `<a class="caption-black" href="/work/#${section}" style="color: rgb(0, 0, 0); --font-scale: 0.75;">${sectionLabel[section]}</a>` : ''}</div>${nav ? navDesktop(nav === true ? undefined : nav) : ''}<br>
 `;
 }
 
@@ -352,11 +352,10 @@ async function buildWork() {
 		mob += `<div data-s="${sec}" class="proj-row proj-row-m">` + await imgItem(p.mobile_thumbnail || thumbs[Math.floor(thumbs.length / 2)], { href, style: 'padding: 0.2rem;' + (crop ? pos(WORK_CROP_MOBILE[p.slug] ?? 34, 31.64) : '') }) + cap + '</div>';
 	}
 	const items = [['all', 'All'], ...SECTIONS.map((n) => [n, sectionLabel[n]])];
-	const nav = `<column-set class="work-nav" style="--cols:5;--gutter:0rem;--mobile-gutter:0.0rem;" mobile-stack>` + items.map(([k, l]) => `<column-unit style="grid-column:span 1"><div style="text-align: center"><a href="/work/${k === 'all' ? '' : '#' + k}" data-f="${k}"${k === 'all' ? ' class="active"' : ''}>${l}</a></div></column-unit>`).join('') + `<column-unit style="grid-column:span 1"><div style="text-align: center"><a href="/info/">Info</a></div></column-unit></column-set>`;
+	const nav = `<column-set class="site-nav" style="--cols:5;--gutter:0rem;--mobile-gutter:0.0rem;" mobile-stack>` + items.map(([k, l]) => `<column-unit style="grid-column:span 1"><div style="text-align: center"><a href="/work/${k === 'all' ? '' : '#' + k}" data-f="${k}"${k === 'all' ? ' class="active"' : ''}>${l}</a></div></column-unit>`).join('') + `<column-unit style="grid-column:span 1"><div style="text-align: center"><a href="/info/">Info</a></div></column-unit></column-set>`;
 	const hd = headerDesktop().replace(/<column-set[\s\S]*<\/column-set>/, nav);
 	const hm = headerMobile({ big: true, nav: true }).replace(/<column-set[\s\S]*<\/column-set>/, nav);
 	const css = `#work.page{min-height:var(--viewport-height)} #work .page-content{align-items:flex-start;padding:1.5rem}
-#work .work-nav *{--font-scale:0.78}
 #work .proj-row[data-s="beauty"]:not(.proj-row-m) media-item img{aspect-ratio:16/15;object-fit:cover}
 #work .proj-row-m[data-s="beauty"] media-item img{aspect-ratio:16/9;object-fit:cover}`;
 	const js = `<script>(function(){var L=document.querySelectorAll('a[data-f]');function set(f){if(!/^(narrative|commercials|beauty)$/.test(f))f='all';L.forEach(function(a){a.classList.toggle('active',a.dataset.f===f);});document.querySelectorAll('.proj-row[data-s]').forEach(function(r){var on=f==='all'||r.dataset.s===f;r.style.display=on?'':'none';var b=r.nextElementSibling;if(b&&b.tagName==='BR')b.style.display=on?'':'none';});}L.forEach(function(a){a.addEventListener('click',function(e){e.preventDefault();var f=a.dataset.f;history.replaceState(null,'',f==='all'?'/work/':'#'+f);set(f);scrollTo(0,0);});});set(location.hash.slice(1));addEventListener('hashchange',function(){set(location.hash.slice(1));});})();</script>`;
@@ -438,6 +437,7 @@ function buildGallery() {
 .gal-h span{text-align:right}
 .gal-h i{font-style:normal;font-weight:normal;color:rgba(0,0,0,.45)}
 .gal-h>div{text-align:left}
+.gal-t{color:#030303;text-decoration:none}.gal-t:hover{opacity:.55}
 .gal-rows{width:100%}
 .gal-row{display:flex;gap:4px;margin-bottom:4px}
 .gal-row img{display:block;cursor:zoom-in;background:#f2f2f2}
