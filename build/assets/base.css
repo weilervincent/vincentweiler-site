@@ -216,13 +216,14 @@ html:not(.mobile) .backdrop.wallpaper.only-mobile { display: none !important; }
 	display: flex; align-items: center; justify-content: center;
 	padding: 1rem; text-align: center;
 	color: #fff; text-decoration: none;
-	--font-size: 3.4rem; font-size: calc(var(--font-scale, 1) * var(--font-size)); line-height: 1.1; letter-spacing: -0.01em;
+	--font-size: 3.4rem; font-size: calc(var(--font-scale, 1) * var(--font-size)); line-height: 1.1; letter-spacing: 0;
+	font-family: "Archivo Narrow", "Arial Narrow", sans-serif; /* typo du titre au survol (24 nov.) */
 	opacity: 0; transition: opacity .35s ease;
 	pointer-events: none;
 }
 .proj-row-m .proj-cap { inset: 0.2rem; --font-size: 2.6rem; }
 .proj-row.is-active img,
-.proj-row:hover img { filter: grayscale(1) brightness(0.45); }
+.proj-row:hover img { filter: grayscale(1) brightness(0.2); } /* survol assombri à 80 % (24 nov.) */
 .proj-row.is-active .proj-cap,
 .proj-row:hover .proj-cap { opacity: 1; }
 .proj-row:hover .proj-cap, .proj-row.is-active .proj-cap { pointer-events: auto; }
@@ -243,6 +244,9 @@ html.mobile #info .info-links a { margin-bottom: 0; }
 
 /* Menu All · Narrative · Commercials · Beauty · Info, same size on every page */
 .site-nav, .site-nav * { --font-scale: 0.78; }
+/* ordinateur : menu centré, écart moyen entre les mots (24 nov.) */
+html:not(.mobile) .site-nav { display: flex; justify-content: center; flex-wrap: wrap; column-gap: 2em; }
+html:not(.mobile) .site-nav > column-unit { flex: none; }
 
 /* Talent names under the hover title: « with Zoe Saldana » */
 .proj-row .proj-cap span { display: flex; flex-direction: column; align-items: center; }
