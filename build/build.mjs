@@ -124,6 +124,34 @@ function videoItem(v) {
 	return `<media-item data-ratio="1"><div class="video-frame" style="aspect-ratio:${ratio(v.format)};"><iframe src="${esc(videoEmbed(v.url, v))}" loading="lazy" allow="autoplay; fullscreen; picture-in-picture; encrypted-media" allowfullscreen referrerpolicy="strict-origin-when-cross-origin" title="Video"></iframe></div></media-item>`;
 }
 
+// Référencement des vidéos (Google) : une fiche VideoObject par vidéo Bunny, + le sitemap vidéo.
+// Nom, description et talents viennent de la fiche projet — rien à remplir à la main.
+// Date de mise en ligne : lancement du nouveau site (13 nov. 2026) ; un projet peut en donner une autre avec « video_date: AAAA-MM-JJ ».
+const VIDEO_DATE = '2026-11-13';
+const pageVideos = new Map();
+function bunnyId(url) {
+	const m = String(url || '').match(/vimeo\.com\/(?:video\/)?(\d+)/i);
+	return m && BUNNY[m[1]] ? BUNNY[m[1]] : null;
+}
+function videoLD(vids, { name, description, date, actors = [] }) {
+	const list = vids.map((v) => bunnyId(v.url)).filter(Boolean);
+	return list.map((id, i) => {
+		const n = list.length > 1 ? `${name} — film ${i + 1} of ${list.length}` : name;
+		const d = list.length > 1 ? `${description} Film ${i + 1} of ${list.length}.` : description;
+		const o = {
+			'@type': 'VideoObject', name: n, description: d,
+			thumbnailUrl: `https://vz-cdd0103b-48f.b-cdn.net/${id}/thumbnail.jpg`,
+			uploadDate: `${date || VIDEO_DATE}T00:00:00+01:00`,
+			embedUrl: `https://player.mediadelivery.net/embed/${BUNNY_LIB}/${id}`,
+			contributor: { '@type': 'Person', '@id': SITE + '/#vincent', name: 'Vincent Weiler', jobTitle: 'Director of Photography' },
+			...(actors.length ? { actor: actors.map((a) => ({ '@type': 'Person', name: a })) } : {}),
+		};
+		if (!pageVideos.has(PAGE_URL)) pageVideos.set(PAGE_URL, []);
+		pageVideos.get(PAGE_URL).push(o);
+		return o;
+	});
+}
+
 // ------------------------------------------------------------------ markup helpers
 const SITE = 'https://www.vincentweiler.com';
 let ALT = ''; // alt text for images of the page being built (SEO + accessibility)
@@ -310,7 +338,9 @@ async function buildProject(p) {
 	const og = await ogJpeg((p.thumbnails || [])[0], p.slug);
 	const secName = sectionLabel[p.section] || '';
 	const description = `${label}${withNames(p)}${p.credits ? ' — ' + plainCredits(p) : ''}. Director of photography / chef opérateur : Vincent Weiler (Paris).${secName ? ' ' + secName + '.' : ''}`;
-	const jsonld = { '@context': 'https://schema.org', '@type': 'CreativeWork', name: label, url: `${SITE}/${p.slug}/`, description, image: og ? SITE + og : undefined, contributor: { '@type': 'Person', '@id': SITE + '/#vincent', name: 'Vincent Weiler', jobTitle: 'Director of Photography' }, ...(featuring(p).length ? { actor: featuring(p).map((n) => ({ '@type': 'Person', name: n })) } : {}) };
+	const allVids = (p.blocks || []).flatMap((b) => ((b.type || b._block) === 'video' ? [b] : (b.type || b._block) === 'videos' ? (b.videos || []) : [])).filter((v) => v && v.url);
+	const vidLD = videoLD(allVids, { name: `${label}${withNames(p)} — Director of Photography Vincent Weiler`, description, date: p.video_date, actors: featuring(p) });
+	const jsonld = { '@context': 'https://schema.org', '@type': 'CreativeWork', name: label, url: `${SITE}/${p.slug}/`, description, image: og ? SITE + og : undefined, contributor: { '@type': 'Person', '@id': SITE + '/#vincent', name: 'Vincent Weiler', jobTitle: 'Director of Photography' }, ...(featuring(p).length ? { actor: featuring(p).map((n) => ({ '@type': 'Person', name: n })) } : {}), ...(vidLD.length ? { video: vidLD } : {}) };
 	write(`${p.slug}/index.html`, page({ id: `p-${p.slug}`, title: label, body, ogImage: og, description, url: `/${p.slug}/`, jsonld }));
 }
 
@@ -434,7 +464,11 @@ async function buildContact() {
 async function buildShowreel() {
 	const row = columnSet([{ html: videoItem(showreel.video) }], { gutter: '1.3rem', stack: true });
 	const body = headerDesktop() + '<br>\n</div>' + headerMobile({ big: true, nav: true }) + '<br>\n</div>' + (showreel.title ? `<div style="text-align: left">${esc(showreel.title)}</div>` : '') + row;
-	write('showreel/index.html', page({ id: 'showreel', title: 'Showreel', body, url: '/showreel/', ogImage: '/og/home.jpg', description: 'Showreel of Vincent Weiler, director of photography / chef opérateur (Paris) — commercials, beauty, fiction.' }));
+	PAGE_URL = '/showreel/';
+	const srDesc = 'Showreel of Vincent Weiler, director of photography / chef opérateur (Paris) — commercials, beauty, fiction.';
+	const srLD = videoLD([showreel.video].filter((v) => v && v.url), { name: 'Showreel — Vincent Weiler, Director of Photography', description: srDesc, date: showreel.video_date });
+	const jsonld = srLD.length ? { '@context': 'https://schema.org', ...srLD[0] } : undefined;
+	write('showreel/index.html', page({ id: 'showreel', title: 'Showreel', body, url: '/showreel/', ogImage: '/og/home.jpg', description: srDesc, jsonld }));
 }
 
 // Gallery: every project still (gallery/photos.json + gallery/m/), same header as the site, linked from Info
@@ -500,7 +534,9 @@ function sitemap(base = 'https://www.vincentweiler.com') {
 	const urls = ['/', '/work/', ...SECTIONS.map((s) => `/${s}/`), ...Object.keys(projects).map((s) => `/${s}/`), '/info/', '/gallery/', '/contact/', '/showreel/'];
 	for (const u of ['/', '/info/']) { if (!pageImages.has(u)) pageImages.set(u, new Set()); pageImages.get(u).add(PORTRAIT); }
 	const img = (u) => [...(pageImages.get(u) || [])].map((s) => `<image:image><image:loc>${base}${s}</image:loc></image:image>`).join('');
-	fs.writeFileSync(path.join(DIST, 'sitemap.xml'), `<?xml version="1.0" encoding="UTF-8"?>\n<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9" xmlns:image="http://www.google.com/schemas/sitemap-image/1.1">\n${urls.map((u) => `<url><loc>${base}${u}</loc>${img(u)}</url>`).join('\n')}\n</urlset>\n`);
+	const x = (t) => String(t).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;');
+	const vid = (u) => (pageVideos.get(u) || []).map((v) => `<video:video><video:thumbnail_loc>${x(v.thumbnailUrl)}</video:thumbnail_loc><video:title>${x(v.name)}</video:title><video:description>${x(v.description)}</video:description><video:player_loc>${x(v.embedUrl)}</video:player_loc><video:publication_date>${v.uploadDate}</video:publication_date></video:video>`).join('');
+	fs.writeFileSync(path.join(DIST, 'sitemap.xml'), `<?xml version="1.0" encoding="UTF-8"?>\n<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9" xmlns:image="http://www.google.com/schemas/sitemap-image/1.1" xmlns:video="http://www.google.com/schemas/sitemap-video/1.1">\n${urls.map((u) => `<url><loc>${base}${u}</loc>${img(u)}${vid(u)}</url>`).join('\n')}\n</urlset>\n`);
 	fs.writeFileSync(path.join(DIST, 'robots.txt'), `User-agent: *\nAllow: /\nSitemap: ${base}/sitemap.xml\n`);
 }
 
