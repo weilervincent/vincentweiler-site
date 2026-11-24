@@ -1,0 +1,7 @@
+// Branche de test uniquement : nécessaire pour les aperçus Cloudflare (wrangler preview)
+{
+  "name": "vincentweiler-site",
+  "compatibility_date": "2026-11-01",
+  "assets": { "directory": "./dist", "not_found_handling": "404-page" },
+  "previews": {}
+}
