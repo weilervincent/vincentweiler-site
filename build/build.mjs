@@ -243,6 +243,8 @@ async function ogJpeg(src, name) {
 	return `/og/${name}.jpg`;
 }
 const featuring = (p) => (Array.isArray(p.featuring) ? p.featuring : p.featuring ? [p.featuring] : []).map((x) => String(x).trim()).filter(Boolean);
+const genre = (p) => String(p.genre || '').trim();
+const capLine = (p) => [genre(p), featuring(p).length ? `with ${featuring(p).join(', ')}` : ''].filter(Boolean).join(' ');
 const withNames = (p) => (featuring(p).length ? ` with ${featuring(p).join(', ')}` : '');
 const plainCredits = (p) => String(p.credits || '').replace(/\s+I\s+/g, ', ').replace(/\s+/g, ' ').trim();
 function write(rel, html) {
@@ -314,7 +316,7 @@ async function buildSection(name) {
 		const thumbs = (p.thumbnails || []).filter(Boolean);
 		PAGE_URL = `/${name}/`;
 		ALT = `${p.hover_title || p.title}${withNames(p)} — cinematography by Vincent Weiler`;
-		const cap = `<a class="proj-cap" href="${href}" aria-label="${esc(p.hover_title || p.title)}"><span>${esc(p.hover_title || p.title)}${featuring(p).length ? `<small>with ${esc(featuring(p).join(', '))}</small>` : ''}</span></a>`;
+		const cap = `<a class="proj-cap" href="${href}" aria-label="${esc(p.hover_title || p.title)}"><span>${esc(p.hover_title || p.title)}${capLine(p) ? `<small>${esc(capLine(p))}</small>` : ''}</span></a>`;
 		desk += `<div class="proj-row">` + columnSet(await Promise.all(thumbs.map(async (t) => ({ html: await imgItem(t, { href, sizes: `${Math.round(90 / thumbs.length)}vw` }) }))), { gutter: '0rem', stack: false }) + cap + '</div><br>\n';
 		mob += `<div class="proj-row proj-row-m">` + await imgItem(p.mobile_thumbnail || thumbs[Math.floor(thumbs.length / 2)], { href, style: 'padding: 0.2rem;' }) + cap + '</div>';
 	}
@@ -352,7 +354,7 @@ async function buildWork() {
 		const href = `/${p.slug}/`;
 		const thumbs = (p.thumbnails || []).filter(Boolean);
 		ALT = `${p.hover_title || p.title}${withNames(p)} — cinematography by Vincent Weiler`;
-		const cap = `<a class="proj-cap" href="${href}" aria-label="${esc(p.hover_title || p.title)}"><span>${esc(p.hover_title || p.title)}${featuring(p).length ? `<small>with ${esc(featuring(p).join(', '))}</small>` : ''}</span></a>`;
+		const cap = `<a class="proj-cap" href="${href}" aria-label="${esc(p.hover_title || p.title)}"><span>${esc(p.hover_title || p.title)}${capLine(p) ? `<small>${esc(capLine(p))}</small>` : ''}</span></a>`;
 		const crop = sec === 'beauty';
 		const pos = (t, win) => `object-position:50% ${(t / (100 - win) * 100).toFixed(1)}%`;
 		desk += `<div data-s="${sec}" data-i="${secIndex(p)}" class="proj-row">` + columnSet(await Promise.all(thumbs.map(async (t, i) => ({ html: await imgItem(t, { href, sizes: `${Math.round(90 / thumbs.length)}vw`, style: crop ? pos((WORK_CROP[p.slug] || [])[i] ?? 15, 52.73) : '' }) }))), { gutter: '0rem', stack: false }) + cap + '</div><br>\n';

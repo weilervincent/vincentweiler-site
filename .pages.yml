@@ -67,6 +67,10 @@ content:
         type: string
         list: true
         description: "Facultatif. Acteurs, actrices, artistes connus présents dans le projet (ex. « Sydney Sweeney »). Affiché au survol des vignettes sous le titre (« with … ») et utilisé pour Google."
+      - name: genre
+        label: Genre
+        type: string
+        description: "Facultatif, pour les projets narratifs (ex. « Short film », « Feature film », « Documentary »). Affiché au survol des vignettes sous le titre."
       - name: credits_mobile
         label: Crédits (téléphone)
         type: text
