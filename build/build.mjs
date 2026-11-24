@@ -90,11 +90,19 @@ async function prepareImages(list) {
 }
 
 // ------------------------------------------------------------------ video
+const BUNNY_LIB = '819718';
+const BUNNY = JSON.parse(fs.readFileSync(path.join(ROOT, 'build/bunny.json'), 'utf8'));
 function videoEmbed(url, v = {}) {
 	url = String(url || '').trim();
 	let m;
 	let src = url;
-	if ((m = url.match(/vimeo\.com\/(?:video\/)?(\d+)(?:\/([0-9a-f]+))?/i))) {
+	if ((m = url.match(/vimeo\.com\/(?:video\/)?(\d+)/i)) && BUNNY[m[1]]) {
+		// hosted on Bunny Stream (library 819718) — the Vimeo URL in content stays as the key
+		const q = new URLSearchParams({ preload: 'true', responsive: 'true' });
+		// toutes les vidéos Bunny démarrent seules, sans le son, en boucle ; le visiteur remet le son avec le bouton du player
+		q.set('autoplay', 'true'); q.set('muted', 'true'); q.set('loop', 'true');
+		src = `https://player.mediadelivery.net/embed/${BUNNY_LIB}/${BUNNY[m[1]]}?${q}`;
+	} else if ((m = url.match(/vimeo\.com\/(?:video\/)?(\d+)(?:\/([0-9a-f]+))?/i))) {
 		const h = m[2] || (url.match(/[?&]h=([0-9a-f]+)/i) || [])[1];
 		const q = new URLSearchParams({ badge: '0', autopause: '0' });
 		if (h) q.set('h', h);
