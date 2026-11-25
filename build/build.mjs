@@ -225,11 +225,14 @@ function page({ id, title, body, css = '', bodyClass = '', ogImage, wallpaper = 
 	const fullTitle = title ? `${title} — ${settings.site_title}` : settings.site_title;
 	// Google Analytics — chargé seulement pour les vrais visiteurs :
 	// - jamais sur les aperçus (*.pages.dev, localhost, aperçus de l'éditeur)
-	// - jamais dans un navigateur automatisé (navigator.webdriver : robots, Claude)
+	// - jamais dans un navigateur automatisé (navigator.webdriver) ni pour un robot ou le
+	//   navigateur de l'app Claude (repérés par leur « user agent » : bot, crawler, headless, Claude/…)
 	// - jamais sur un appareil passé en « mode maintenance » : ouvrir une fois
 	//   vincentweiler.com/?notrack sur cet appareil ; ?track pour annuler.
+	// - la visite n'est comptée qu'au premier geste humain (clic, molette, défilement, toucher, clavier)
+	//   ou après 5 s de page visible : les robots qui chargent la page et repartent ne comptent plus.
 	const gaId = settings.google_analytics ? esc(settings.google_analytics) : '';
-	const ga = gaId ? `<script>(function(){var k='vw_notrack',q=location.search;try{if(/[?&]notrack(=|&|$)/.test(q)){localStorage.setItem(k,'1');console.info('Analytics désactivé sur cet appareil');}if(/[?&]track(=|&|$)/.test(q)){localStorage.removeItem(k);console.info('Analytics réactivé sur cet appareil');}if(localStorage.getItem(k))return;}catch(e){}if(navigator.webdriver)return;if(!/(^|\\.)vincentweiler\\.com$/.test(location.hostname))return;var s=document.createElement('script');s.async=true;s.src='https://www.googletagmanager.com/gtag/js?id=${gaId}';document.head.appendChild(s);window.dataLayer=window.dataLayer||[];window.gtag=function(){dataLayer.push(arguments);};gtag('js',new Date());gtag('config','${gaId}');})();</script>` : '';
+	const ga = gaId ? `<script>(function(){var k='vw_notrack',q=location.search;try{if(/[?&]notrack(=|&|$)/.test(q)){localStorage.setItem(k,'1');console.info('Analytics désactivé sur cet appareil');}if(/[?&]track(=|&|$)/.test(q)){localStorage.removeItem(k);console.info('Analytics réactivé sur cet appareil');}if(localStorage.getItem(k))return;}catch(e){}if(navigator.webdriver)return;if(/bot|crawl|spider|slurp|headless|lighthouse|pingdom|gtmetrix|python|curl|wget|externalhit|claude[/]/i.test(navigator.userAgent))return;if(!/(^|\\.)vincentweiler\\.com$/.test(location.hostname))return;var done=0,t,ev=['pointerdown','touchstart','wheel','scroll','keydown'];function go(){if(done)return;done=1;clearTimeout(t);ev.forEach(function(e){removeEventListener(e,go,true);});document.removeEventListener('visibilitychange',arm);var s=document.createElement('script');s.async=true;s.src='https://www.googletagmanager.com/gtag/js?id=${gaId}';document.head.appendChild(s);window.dataLayer=window.dataLayer||[];window.gtag=function(){dataLayer.push(arguments);};gtag('js',new Date());gtag('config','${gaId}');}function arm(){clearTimeout(t);if(document.visibilityState!=='hidden')t=setTimeout(go,5000);}ev.forEach(function(e){addEventListener(e,go,{capture:true,passive:true});});document.addEventListener('visibilitychange',arm);arm();})();</script>` : '';
 	return `<!doctype html>
 <html lang="en">
 <head>
@@ -249,6 +252,7 @@ ${ogImage ? `<meta property="og:image" content="${SITE}${ogImage}">
 <meta name="twitter:card" content="summary_large_image">` : ''}
 <script type="application/ld+json">${JSON.stringify(jsonld || personLD()).replace(/</g, '\\u003c')}</script>
 <link rel="icon" href="/favicon.ico" sizes="any">
+<link rel="apple-touch-icon" href="/apple-touch-icon.png">
 <link rel="preload" href="/fonts/SrirachaDisplay-Regular.woff2" as="font" type="font/woff2" crossorigin>
 <link rel="stylesheet" href="/assets/base.css">
 <link rel="stylesheet" href="/assets/site.css">
@@ -551,6 +555,8 @@ async function main() {
 	copyDir(path.join(ROOT, 'build/fonts'), path.join(DIST, 'fonts'));
 	copyDir(path.join(ROOT, 'media/portrait'), path.join(DIST, 'media/portrait'));
 	fs.copyFileSync(path.join(ROOT, 'build/favicon.ico'), path.join(DIST, 'favicon.ico'));
+	fs.copyFileSync(path.join(ROOT, 'build/apple-touch-icon.png'), path.join(DIST, 'apple-touch-icon.png'));
+	fs.copyFileSync(path.join(ROOT, 'build/apple-touch-icon.png'), path.join(DIST, 'apple-touch-icon-precomposed.png'));
 	fs.copyFileSync(path.join(ROOT, 'build/_headers'), path.join(DIST, '_headers'));
 
 	const all = [...(home.background_images || []), ...(home.background_images_mobile || []), ...(info.photos || [])];

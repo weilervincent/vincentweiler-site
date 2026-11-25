@@ -49,3 +49,5 @@ Les photos sont automatiquement redimensionnées (2000 px de large maximum) et c
 - Pour réactiver : **vincentweiler.com/?track**.
 - À refaire si tu vides les données du navigateur, ou si tu n'as pas ouvert le site depuis plus de 7 jours dans Safari (Safari efface ce réglage).
 - Automatique, sans rien faire : les aperçus (*.pages.dev) et les navigateurs automatisés (robots, Claude) ne sont jamais comptés.
+- Depuis le 25 nov. 2026 : le navigateur de l'app Claude et les robots (bot, crawler, headless…) ne sont jamais comptés, et une visite n'est comptée qu'au premier geste (clic, molette, défilement, toucher, clavier) ou après 5 s sur la page. Les robots qui ouvrent la page et repartent aussitôt ne comptent plus.
+- Pour un chiffre fiable : regarder Google Analytics, ou Cloudflare › Web Analytics. Le compteur « Total requests » de Cloudflare compte chaque fichier (images, CSS…) et chaque robot : ce n'est pas un nombre de visiteurs.
