@@ -67,8 +67,5 @@ background_images:
   phone: 58
 - image: /media/home/desktop/desktop-35.webp
   phone: 63
-- image: /media/home/desktop/lancome-01.webp
-  phone: 50
-  desktop_y: 44
 seconds_per_image: 1
 shuffle: true
