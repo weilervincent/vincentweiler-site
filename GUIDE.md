@@ -33,7 +33,7 @@ Ouvre le projet, puis le bloc concerné. Tu peux :
 Les photos sont automatiquement redimensionnées (2000 px de large maximum) et converties pour le web.
 
 ## Le reste
-- **Accueil** : images de fond pour ordinateur et pour téléphone, vitesse du défilement.
+- **Accueil** : une seule liste d’images de fond (ordinateur + téléphone). Pour chaque image, « Centre du cadre téléphone » place le recadrage vertical sur le sujet ; « Seulement sur téléphone » pour une image verticale. Vitesse du défilement.
 - **Info** : photos, texte de présentation, clients, liens.
 - **Contact**, **Showreel** et **Réglages du site** (titre et description pour Google).
 

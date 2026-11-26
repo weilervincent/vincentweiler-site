@@ -16,6 +16,8 @@ const nl2br = (s) => esc(s).replace(/\n/g, '<br>\n');
 
 const settings = read('content/settings.yml');
 const home = read('content/home.yml');
+// Accueil : une seule liste d'images. Chaque entrée = un chemin, ou { image, phone (centre du cadre téléphone, 0-100 %), desktop_y (hauteur du cadre ordinateur pour une image verticale, 0-100 %), phone_only }.
+const HOME_BG = (home.background_images || []).map((e) => (typeof e === 'string' ? { image: e } : e || {})).filter((e) => e.image);
 const info = read('content/info.yml');
 const contact = read('content/contact.yml');
 const showreel = read('content/showreel.yml');
@@ -427,13 +429,13 @@ async function buildHome() {
 </h2></div></div>`;
 	PAGE_URL = '/';
 	ALT = 'Vincent Weiler, director of photography — film still';
-	const wall = async (list, cls) => {
+	const wall = async (list, cls, phone) => {
 		const items = [];
-		for (const s of list || []) { const im = await image(s); if (im) useImage(im.src); if (im) items.push(`<media-item><img ${items.length < 2 ? 'src' : 'data-src'}="${im.src}" ${items.length < 2 ? 'srcset' : 'data-srcset'}="${im.srcset}" sizes="100vw" alt="${esc(ALT)}" decoding="async"></media-item>`); }
+		for (const e of list) { const im = await image(e.image); if (!im) continue; useImage(im.src); const x = Number(e.phone); const y = Number(e.desktop_y); const clamp = (v) => Math.min(100, Math.max(0, v)); const st = phone ? (Number.isFinite(x) && x !== 50 ? ` style="object-position:${clamp(x)}% 50%"` : '') : (Number.isFinite(y) && y !== 50 ? ` style="object-position:50% ${clamp(y)}%"` : ''); items.push(`<media-item><img ${items.length < 2 ? 'src' : 'data-src'}="${im.src}" ${items.length < 2 ? 'srcset' : 'data-srcset'}="${im.srcset}" sizes="100vw" alt="${esc(ALT)}" decoding="async"${st}></media-item>`); }
 		const opts = { autoplay: true, delay: Number(home.seconds_per_image) || 1, speed: 1, type: 'fade', shuffle: home.shuffle !== false, nav: 'none', fill: 'fill' };
 		return `<div class="backdrop wallpaper ${cls}" style="opacity:0.95"><gallery-slideshow class="wallpaper-slideshow" data-options='${esc(JSON.stringify(opts))}'>${items.join('')}</gallery-slideshow></div>`;
 	};
-	const wallpaper = await wall(home.background_images, 'only-desktop') + await wall(home.background_images_mobile?.length ? home.background_images_mobile : home.background_images, 'only-mobile');
+	const wallpaper = await wall(HOME_BG.filter((e) => !e.phone_only), 'only-desktop', false) + await wall(HOME_BG, 'only-mobile', true);
 	const css = `#home.page{min-height:var(--viewport-height)} #home .page-content{align-items:center;width:100%} #home .page-layout{align-items:center}
 html:has(#home){cursor:pointer}
 .vw-arrow{position:fixed;left:50%;bottom:2.2rem;transform:translateX(-50%);z-index:50;opacity:0;transition:opacity 1.4s ease;pointer-events:none;color:#fff}
@@ -443,7 +445,7 @@ html:has(#home){cursor:pointer}
 @media (prefers-reduced-motion:reduce){.vw-arrow.on{animation:none}}
 html.vw-leave body{opacity:0;transition:opacity .4s ease}`;
 	const enter = `<div class="vw-arrow" aria-hidden="true"><svg viewBox="0 0 18 34" fill="none" stroke="currentColor" stroke-width="1"><path d="M9 1v31M2 25l7 7 7-7"/></svg></div><script>(function(){setTimeout(function(){var a=document.querySelector('.vw-arrow');if(a)a.classList.add('on');},2500);var gone=false;function go(){if(gone)return;gone=true;document.documentElement.classList.add('vw-leave');setTimeout(function(){location.href='/work/';},400);}addEventListener('pageshow',function(e){if(e.persisted){gone=false;document.documentElement.classList.remove('vw-leave');}});document.addEventListener('click',function(e){if(e.target.closest('a'))e.preventDefault();go();});addEventListener('keydown',function(e){if(e.key==='Enter'||e.key===' '||e.key==='ArrowDown'||e.key==='PageDown')go();});var acc=0,last=0;addEventListener('wheel',function(e){e.preventDefault();var n=Date.now();if(n-last>300)acc=0;last=n;if(e.deltaY>0)acc+=e.deltaY;if(acc>40)go();},{passive:false});var ty=null;addEventListener('touchstart',function(e){ty=e.touches[0].clientY;},{passive:true});addEventListener('touchmove',function(e){if(ty!==null&&ty-e.touches[0].clientY>40)go();},{passive:true});})();</script>`;
-	const og = await ogJpeg((home.background_images || [])[0], 'home');
+	const og = await ogJpeg((HOME_BG.find((e) => !e.phone_only) || {}).image, 'home');
 	write('index.html', page({ id: 'home', title: '', body: desk + mob + enter, css, wallpaper, ogImage: og, url: '/' }));
 	write('404.html', page({ id: 'home', title: '', body: desk + mob, css, wallpaper }));
 }
@@ -559,7 +561,7 @@ async function main() {
 	fs.copyFileSync(path.join(ROOT, 'build/apple-touch-icon.png'), path.join(DIST, 'apple-touch-icon-precomposed.png'));
 	fs.copyFileSync(path.join(ROOT, 'build/_headers'), path.join(DIST, '_headers'));
 
-	const all = [...(home.background_images || []), ...(home.background_images_mobile || []), ...(info.photos || [])];
+	const all = [...HOME_BG.map((e) => e.image), ...(info.photos || [])];
 	for (const p of Object.values(projects)) {
 		all.push(...(p.thumbnails || []), p.mobile_thumbnail);
 		for (const b of p.blocks || []) all.push(...(b.images || []));

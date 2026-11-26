@@ -1,82 +1,74 @@
 name: Vincent Weiler
 subtitle: Director of photography
 background_images:
-- /media/home/desktop/desktop-01.webp
-- /media/home/desktop/desktop-02.webp
-- /media/home/desktop/desktop-03.webp
-- /media/home/desktop/desktop-04.webp
-- /media/home/desktop/desktop-05.webp
-- /media/home/desktop/desktop-06.webp
-- /media/home/desktop/desktop-07.webp
-- /media/home/desktop/desktop-08.webp
-- /media/home/desktop/desktop-09.webp
-- /media/home/desktop/desktop-10.webp
-- /media/home/desktop/desktop-11.webp
-- /media/home/desktop/desktop-12.webp
-- /media/home/desktop/desktop-13.webp
-- /media/home/desktop/desktop-14.webp
-- /media/home/desktop/desktop-15.webp
-- /media/home/desktop/desktop-16.webp
-- /media/home/desktop/desktop-17.webp
-- /media/home/desktop/desktop-18.webp
-- /media/home/desktop/desktop-19.webp
-- /media/home/desktop/desktop-20.webp
-- /media/home/desktop/desktop-21.webp
-- /media/home/desktop/desktop-22.webp
-- /media/home/desktop/desktop-23.webp
-- /media/home/desktop/desktop-24.webp
-- /media/home/desktop/desktop-25.webp
-- /media/home/desktop/desktop-26.webp
-- /media/home/desktop/desktop-27.webp
-- /media/home/desktop/desktop-28.webp
-- /media/home/desktop/desktop-29.webp
-- /media/home/desktop/desktop-30.webp
-- /media/home/desktop/desktop-31.webp
-- /media/home/desktop/desktop-32.webp
-- /media/home/desktop/desktop-33.webp
-- /media/home/desktop/desktop-34.webp
-- /media/home/desktop/desktop-35.webp
-- /media/home/desktop/desktop-36.webp
-background_images_mobile:
-- /media/home/mobile/mobile-01.webp
-- /media/home/mobile/mobile-02.webp
-- /media/home/mobile/mobile-03.webp
-- /media/home/mobile/mobile-04.webp
-- /media/home/mobile/mobile-05.webp
-- /media/home/mobile/mobile-06.webp
-- /media/home/mobile/mobile-07.webp
-- /media/home/mobile/mobile-08.webp
-- /media/home/mobile/mobile-09.webp
-- /media/home/mobile/mobile-10.webp
-- /media/home/mobile/mobile-11.webp
-- /media/home/mobile/mobile-12.webp
-- /media/home/mobile/mobile-13.webp
-- /media/home/mobile/mobile-14.webp
-- /media/home/mobile/mobile-15.webp
-- /media/home/mobile/mobile-16.webp
-- /media/home/mobile/mobile-17.webp
-- /media/home/mobile/mobile-18.webp
-- /media/home/mobile/mobile-19.webp
-- /media/home/mobile/mobile-20.webp
-- /media/home/mobile/mobile-21.webp
-- /media/home/mobile/mobile-22.webp
-- /media/home/mobile/mobile-23.webp
-- /media/home/mobile/mobile-24.webp
-- /media/home/mobile/mobile-25.webp
-- /media/home/mobile/mobile-26.webp
-- /media/home/mobile/mobile-27.webp
-- /media/home/mobile/mobile-28.webp
-- /media/home/mobile/mobile-29.webp
-- /media/home/mobile/mobile-30.webp
-- /media/home/mobile/mobile-31.webp
-- /media/home/mobile/mobile-32.webp
-- /media/home/mobile/mobile-33.webp
-- /media/home/mobile/mobile-34.webp
-- /media/home/mobile/mobile-35.webp
-- /media/home/mobile/mobile-36.webp
-- /media/home/mobile/mobile-37.webp
-- /media/home/mobile/mobile-38.webp
-- /media/home/mobile/mobile-39.webp
-- /media/home/mobile/mobile-40.webp
+- image: /media/home/desktop/desktop-01.webp
+  phone: 43
+- image: /media/home/desktop/desktop-02.webp
+  phone: 54
+- image: /media/home/desktop/desktop-04.webp
+  phone: 48
+- image: /media/home/desktop/desktop-03.webp
+  phone: 40
+- image: /media/home/desktop/desktop-05.webp
+  phone: 47
+- image: /media/home/desktop/desktop-06.webp
+  phone: 48
+- image: /media/home/desktop/desktop-07.webp
+  phone: 28
+- image: /media/home/desktop/desktop-08.webp
+  phone: 67
+- image: /media/home/desktop/desktop-09.webp
+  phone: 39
+- image: /media/home/desktop/desktop-10.webp
+  phone: 43
+- image: /media/home/desktop/desktop-11.webp
+  phone: 72
+- image: /media/home/desktop/desktop-12.webp
+  phone: 49
+- image: /media/home/desktop/desktop-13.webp
+  phone: 19
+- image: /media/home/desktop/desktop-14.webp
+  phone: 67
+- image: /media/home/desktop/desktop-16.webp
+  phone: 5
+- image: /media/home/desktop/desktop-18.webp
+  phone: 36
+- image: /media/home/desktop/desktop-19.webp
+  phone: 50
+- image: /media/home/desktop/desktop-20.webp
+  phone: 67
+- image: /media/home/desktop/desktop-21.webp
+  phone: 29
+- image: /media/home/desktop/desktop-22.webp
+  phone: 50
+- image: /media/home/desktop/desktop-23.webp
+  phone: 50
+- image: /media/home/desktop/desktop-24.webp
+  phone: 46
+- image: /media/home/desktop/desktop-25.webp
+  phone: 51
+- image: /media/home/desktop/desktop-26.webp
+  phone: 66
+- image: /media/home/desktop/desktop-27.webp
+  phone: 50
+- image: /media/home/desktop/desktop-28.webp
+  phone: 50
+- image: /media/home/desktop/desktop-29.webp
+  phone: 50
+- image: /media/home/desktop/desktop-30.webp
+  phone: 42
+- image: /media/home/desktop/desktop-31.webp
+  phone: 44
+- image: /media/home/desktop/desktop-32.webp
+  phone: 52
+- image: /media/home/desktop/desktop-33.webp
+  phone: 20
+- image: /media/home/desktop/desktop-34.webp
+  phone: 58
+- image: /media/home/desktop/desktop-35.webp
+  phone: 63
+- image: /media/home/desktop/lancome-01.webp
+  phone: 50
+  desktop_y: 44
 seconds_per_image: 1
 shuffle: true

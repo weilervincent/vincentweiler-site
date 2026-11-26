@@ -251,13 +251,14 @@ content:
       - { name: name, label: Nom, type: string }
       - { name: subtitle, label: Sous-titre, type: string }
       - name: background_images
-        label: Images de fond (ordinateur)
-        type: image
+        label: Images de fond (une seule liste, ordinateur + téléphone)
+        type: object
         list: true
-      - name: background_images_mobile
-        label: Images de fond (téléphone, format vertical)
-        type: image
-        list: true
+        fields:
+          - { name: image, label: Image, type: image }
+          - { name: phone, label: "Centre du cadre téléphone (0 = gauche, 50 = milieu, 100 = droite)", type: number, options: { min: 0, max: 100, step: 1 } }
+          - { name: desktop_y, label: "Hauteur du cadre ordinateur, pour une image verticale (0 = haut, 50 = milieu, 100 = bas)", type: number, options: { min: 0, max: 100, step: 1 } }
+          - { name: phone_only, label: Seulement sur téléphone (image verticale), type: boolean }
       - { name: seconds_per_image, label: Secondes par image, type: number, options: { min: 0.5, max: 10, step: 0.5 } }
       - { name: shuffle, label: Ordre aléatoire, type: boolean }
 
